@@ -1,0 +1,29 @@
+name: check
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+      - name: import binary caches from the flake itself
+        run: |
+          subs=$(nix eval --raw '.#nixosConfigurations.dazai.config.nix.settings.substituters' --apply 'builtins.concatStringsSep " "' 2>/dev/null || echo "")
+          keys=$(nix eval --raw '.#nixosConfigurations.dazai.config.nix.settings.trusted-public-keys' --apply 'builtins.concatStringsSep " "' 2>/dev/null || echo "")
+          if [ -n "$subs" ]; then
+            echo "extra-substituters = $subs"        | sudo tee -a /etc/nix/nix.conf
+            echo "extra-trusted-public-keys = $keys" | sudo tee -a /etc/nix/nix.conf
+            echo "── caches imported: $subs"
+          else
+            echo "── no caches declared yet (fine before phase 2)"
+          fi
+      - name: eval toplevels
+        run: |
+          for h in $(nix eval .#nixosConfigurations --apply builtins.attrNames --json | jq -r '.[]'); do
+            echo "── eval $h"
+            nix eval ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath" >/dev/null
+          done

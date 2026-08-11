@@ -1,7 +1,11 @@
 { den, ... }:
 {
   den.aspects.profile-base = {
-    includes = with den.aspects [ nix-caches ];
+    includes = [
+      den.aspects.nix-settings
+      den.aspects.nix-caches
+      den.aspects.nix-nh
+    ];
 
     nixos =
       { pkgs, ... }:

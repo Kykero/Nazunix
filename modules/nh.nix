@@ -11,7 +11,7 @@
   den.aspects.nix-nh.nixos = {
     programs.nh = {
       enable = true;
-      flake = "/home/nazuna/nix-config";
+      flake = "/home/nazuna/Nazunix";
       clean = {
         enable = true;
         dates = "Sat 13:00";

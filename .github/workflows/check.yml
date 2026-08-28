@@ -23,7 +23,10 @@ jobs:
           fi
       - name: eval toplevels
         run: |
-          for h in $(nix eval .#nixosConfigurations --apply builtins.attrNames --json | jq -r '.[]'); do
+          set -euo pipefail
+          hosts=$(nix eval .#nixosConfigurations --apply builtins.attrNames --json | jq -r '.[]')
+          [ -n "$hosts" ] # an empty host list means the flake itself failed to eval
+          for h in $hosts; do
             echo "── eval $h"
             nix eval ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath" >/dev/null
           done

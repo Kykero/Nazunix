@@ -1,6 +1,6 @@
 { ... }:
 {
-  den.aspects.dazai-hw.nixos = {
+  den.aspects.boot-grub-efi.nixos = {
     # systemd in the initrd: clean boot flow, prerequisite for TPM2 unlock later
     boot.initrd.systemd.enable = true;
 
@@ -10,7 +10,7 @@
         enable = true;
         efiSupport = true;
         device = "nodev"; # EFI only, no MBR install
-        useOSProber = false; # NixOS is alone on this machine
+        useOSProber = false; # NixOS is alone on these machines
         configurationLimit = 20; # keep the menu readable
       };
     };

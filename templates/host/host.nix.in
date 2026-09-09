@@ -1,0 +1,13 @@
+{ den, ... }:
+{
+  # shared hardware aspect: everything physical about the machine.
+  # disko.nix (and hardware.nix, once generated) write into @@HOST@@-hw.
+  den.aspects.@@HOST@@-hw.includes = [
+    den.aspects.boot-grub-efi
+    den.aspects.zram # @@ZRAM@@
+  ];
+
+  # both entities run on this machine
+  den.aspects.@@HOST@@.includes = [ den.aspects.@@HOST@@-hw ];
+  den.aspects.@@HOST@@-base.includes = [ den.aspects.@@HOST@@-hw ];
+}

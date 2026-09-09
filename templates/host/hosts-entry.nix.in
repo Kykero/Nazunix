@@ -1,0 +1,6 @@
+    @@HOST@@.users.@@USER@@ = { };
+    @@HOST@@-base = {
+      hostName = "@@HOST@@";
+      profile = "base";
+      users.@@USER@@ = { };
+    };

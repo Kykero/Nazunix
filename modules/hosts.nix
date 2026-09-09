@@ -15,5 +15,7 @@
       profile = "base";
       users.nazuna = { };
     };
+
+    # den-bootstrap inserts new hosts above this line
   };
 }

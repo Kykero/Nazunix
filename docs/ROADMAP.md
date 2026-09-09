@@ -77,37 +77,36 @@ the only place anything gets evaluated or built.
 | 3 | `profiles/{base,full}.nix`, `dazai-base` / `yamori-base` entities | done |
 | 4 | disko btrfs layout, GRUB, monthly scrub, zram (dazai); placeholder deleted | done |
 | 5 | `modules/users/nazuna.nix`, `modules/homes/{bash,btop}.nix`: `define-user`, `primary-user`, bash login shell, home-manager bash + btop | done |
-| 6 | modules/apps/{bootstrap,warm,rebuild}.nix: den-bootstrap (gum installer from the live ISO), den-warm (pull the full closure via nh os build), den-rebuild (ff-only pull + nh os switch); CI builds all three | done |
+| 6 | `modules/apps/{bootstrap,warm,rebuild}.nix`: `den-bootstrap` (gum installer from the live ISO; generates `hardware.nix`, renders a new host from `templates/host/` or patches an existing host's disk device), `den-warm` (pull the full closure via `nh os build`), `den-rebuild` (ff-only pull + `nh os switch`); CI builds all three | done |
 
 ### Phases 7–11
 
 | Phase | Files | Content | Gate |
 |---|---|---|---|
-| **7. Install yamori** | — | `den-bootstrap` → pick `yamori-base` → reboot → `nh os switch` to `yamori` | machine boots |
-| **8. Install dazai** | — | `den-bootstrap` → pick `dazai-base` → reboot → `den-warm` → `nh os switch` to `dazai` | machine boots |
-| **9. Secrets** | `modules/secrets/sops.nix`, `.sops.yaml`, `secrets/*.yaml` | `ssh-to-age` from host keys post-boot, `hashedPasswordFile` replaces the temporary `initialPassword` | switch on real hardware |
+| **7. Install yamori** | `modules/hosts/yamori/hardware.nix` | `den-bootstrap` → pick `yamori`, its disk → review generated files → install → reboot → commit + push the generated files → `nh os switch` to `yamori` | machine boots, CI green |
+| **8. Install dazai** | `modules/hosts/dazai/hardware.nix` | same with `dazai`, then `den-warm` before `nh os switch` | machine boots, CI green |
+| **9. Secrets** | `modules/secrets/sops.nix`, `.sops.yaml`, `secrets/*.yaml` | `ssh-to-age` from host keys post-boot, `hashedPasswordFile` replaces the password typed at install time | switch on real hardware |
 | **10. Desktop** | `modules/desktop/{niri,niri-home,portals}.nix`, `modules/homes/mailspring.nix` | niri session in `nixos`, KDL config in `homeManager`, xdg portals; Mailspring as the email client (home aspect, account setup stays out of the repo) | CI eval + build (**niri cache required**) |
 | **11. Fleet** | `modules/nix/distributed.nix` | `yamori` accepts builds (`builder`), `dazai` delegates (`build-client`), user `nixremote`, `ssh-ng`, resolved via `yamori.local` | real cross-machine test |
 
 `yamori` is installed **before** `dazai`: the 8 GB laptop should not be left
 compiling whatever the caches miss, with no disk swap yet.
 
-A temporary `initialPassword` is added just before phase 7 (needed to log
-into the freshly installed system before secrets exist) and is removed in
-phase 9, once `hashedPasswordFile` from sops is available.
+No password ever lives in the repo: `den-bootstrap` ends with
+`nixos-enter --root /mnt -c 'passwd <user>'`, the NixOS manual's recommended
+way, and phase 9 moves that password into sops.
 
 ## 5. Known gaps
 
-- **`hardware.nix`** does not exist yet for either machine. It requires
-  booting a live USB on each box, running `nixos-generate-config
-  --no-filesystems --show-hardware-config`, and hand-transcribing the ~15
-  useful lines (initrd kernel modules, `boot.kernelModules`,
-  `hardware.cpu.*.updateMicrocode`) into `modules/hosts/<machine>/hardware.nix`.
-  **Never `nixos-facter`** — it embeds MACs and serials in `facter.json`.
-  Evaluation passes without it; booting reliably does not.
-- **disko device paths are TODO** in `modules/hosts/dazai/disko.nix` and
-  `modules/hosts/yamori/disko.nix` (currently `/dev/nvme0n1`, marked to
-  confirm with `lsblk` from the live ISO on each box before install).
+- **`hardware.nix`** does not exist yet for either machine. `den-bootstrap`
+  generates it at install time from `nixos-generate-config --no-filesystems
+  --show-hardware-config`, keeping only kernel modules and microcode, and
+  shows it before anything is written to disk. **Never `nixos-facter`** — it
+  embeds MACs and serials in `facter.json`. Evaluation passes without the
+  file; booting reliably does not.
+- **disko device paths are placeholders** (`/dev/nvme0n1`) in both
+  `disko.nix` files until the first real install: `den-bootstrap` lists the
+  machine's disks and rewrites the device with the one you pick.
 
 ## 6. Reference install sequence
 
@@ -117,18 +116,38 @@ automate. From the live ISO, as root:
 ```bash
 sudo -i
 nix --extra-experimental-features "nix-command flakes" run github:Kykero/Nazunix#den-bootstrap
-# choose entity, confirm the wipe, wait
 ```
 
-`den-bootstrap` burns the caches in with `--option` flags read straight off
-`modules/nix/caches.nix` at eval time — no values re-typed by hand — and it
-never reboots by itself. When it's done: remove the install media and reboot
-manually, then log in as `nazuna`:
+`den-bootstrap` asks for the host (an existing one, or "new host" plus a
+name), the user (among `modules/users/*.nix`) and the target disk (the live
+USB is excluded). It then generates `hardware.nix` from
+`nixos-generate-config`, renders a new host's `<host>.nix` and `disko.nix`
+from `templates/host/` (or patches the disk device of an existing host's
+`disko.nix` in place), shows the staged diff, evaluates the
+`-base` entity **before** touching the disk, and only then asks for the
+irreversible confirmation. Caches are burned in with `--option` flags read
+from the evaluated config — nothing re-typed by hand. It ends by asking for
+the user's password and never reboots by itself.
+
+Nothing is committed from the ISO: the checkout with the generated files
+lands in `/home/<user>/Nazunix`. After removing the media and rebooting, log
+in and finish from the machine:
 
 ```bash
-nix run /home/nazuna/Nazunix#den-warm   # needed on dazai, harmless on yamori
+cd ~/Nazunix && git status          # generated host files, staged
+git commit -m "feat(<host>): hardware and disk from den-bootstrap"
+git push                            # CI evaluates the new host
+nix run ~/Nazunix#den-warm          # needed on dazai, harmless on yamori
 nh os switch
 ```
+
+### Adding a machine
+
+Same command, pick "new host", give it a name. `den-bootstrap` registers
+`<host>` and `<host>-base` in `modules/hosts.nix` (above its marker line),
+creates `modules/hosts/<host>/{<host>,disko,hardware}.nix`, includes zram
+when the machine has less than 16 GiB of RAM, and installs `<host>-base`.
+Commit and push after the first boot, exactly as above.
 
 Day-2 rebuilds pull the latest `main` fast-forward-only and switch:
 

@@ -31,3 +31,5 @@ jobs:
             echo "── eval $h"
             nix eval ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath" >/dev/null
           done
+      - name: build phase-6 apps
+        run: nix build .#den-bootstrap .#den-warm .#den-rebuild --no-link -L

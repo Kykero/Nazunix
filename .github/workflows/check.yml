@@ -3,6 +3,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch: # lock.yml dispatches this after pushing a new flake.lock
 
 jobs:
   eval:

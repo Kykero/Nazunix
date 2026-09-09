@@ -9,8 +9,8 @@ A fully declarative, reproducible NixOS configuration for a small personal
 fleet, public on GitHub under the Kykero pseudonym.
 
 **Success criterion:** from a minimal NixOS live ISO, a machine goes from
-blank disk to full desktop in ~6 commands, with zero interactive choices,
-because the repo *is* the installer.
+blank disk to full desktop in ~6 commands, with a single choice (which
+entity) plus one wipe confirmation, because the repo *is* the installer.
 
 ## 2. Machines / entities
 
@@ -67,7 +67,7 @@ the only place anything gets evaluated or built.
 
 ## 4. Status (as of 2026-09-09)
 
-### Phases 0–5
+### Phases 0–6
 
 | Phase | Content | Status |
 |---|---|---|
@@ -77,14 +77,14 @@ the only place anything gets evaluated or built.
 | 3 | `profiles/{base,full}.nix`, `dazai-base` / `yamori-base` entities | done |
 | 4 | disko btrfs layout, GRUB, monthly scrub, zram (dazai); placeholder deleted | done |
 | 5 | `modules/users/nazuna.nix`, `modules/homes/{bash,btop}.nix`: `define-user`, `primary-user`, bash login shell, home-manager bash + btop | done |
+| 6 | modules/apps/{bootstrap,warm,rebuild}.nix: den-bootstrap (gum installer from the live ISO), den-warm (pull the full closure via nh os build), den-rebuild (ff-only pull + nh os switch); CI builds all three | done |
 
-### Phases 6–11
+### Phases 7–11
 
 | Phase | Files | Content | Gate |
 |---|---|---|---|
-| **6. Apps** | `modules/apps/{bootstrap,warm,rebuild}.nix` | `den-bootstrap` interactive installer (**gum**, single question: which entity), `den-warm`, rebuild helper | CI build |
-| **7. Install yamori** | — | disko → `nixos-install .#yamori-base` with `--option` caches → boot → `switch .#yamori` | machine boots |
-| **8. Install dazai** | — | same, then `den-warm`, then full | machine boots |
+| **7. Install yamori** | — | `den-bootstrap` → pick `yamori-base` → reboot → `nh os switch` to `yamori` | machine boots |
+| **8. Install dazai** | — | `den-bootstrap` → pick `dazai-base` → reboot → `den-warm` → `nh os switch` to `dazai` | machine boots |
 | **9. Secrets** | `modules/secrets/sops.nix`, `.sops.yaml`, `secrets/*.yaml` | `ssh-to-age` from host keys post-boot, `hashedPasswordFile` replaces the temporary `initialPassword` | switch on real hardware |
 | **10. Desktop** | `modules/desktop/{niri,niri-home,portals}.nix`, `modules/homes/mailspring.nix` | niri session in `nixos`, KDL config in `homeManager`, xdg portals; Mailspring as the email client (home aspect, account setup stays out of the repo) | CI eval + build (**niri cache required**) |
 | **11. Fleet** | `modules/nix/distributed.nix` | `yamori` accepts builds (`builder`), `dazai` delegates (`build-client`), user `nixremote`, `ssh-ng`, resolved via `yamori.local` | real cross-machine test |
@@ -111,23 +111,30 @@ phase 9, once `hashedPasswordFile` from sops is available.
 
 ## 6. Reference install sequence
 
-Target UX that the phase 6 scripts (`den-bootstrap`, `den-warm`) automate:
+UX that the phase 6 scripts (`den-bootstrap`, `den-warm`, `den-rebuild`)
+automate. From the live ISO, as root:
 
 ```bash
 sudo -i
-nix-shell -p git
-git clone https://github.com/Kykero/Nazunix /tmp/cfg && cd /tmp/cfg
-nix run github:nix-community/disko -- --mode disko --flake .#dazai-base   # ERASES THE DISK
-nixos-install --flake .#dazai-base --no-root-password \
-  --option extra-substituters "..." --option extra-trusted-public-keys "..."
-reboot
-sudo nixos-rebuild switch --flake .#dazai
+nix --extra-experimental-features "nix-command flakes" run github:Kykero/Nazunix#den-bootstrap
+# choose entity, confirm the wipe, wait
 ```
 
-The `--option extra-substituters` / `--option extra-trusted-public-keys`
-values come straight from `modules/nix/caches.nix` — they are only passed by
-hand this once, for the `-base` install, because the target `nix.conf`
-doesn't exist yet.
+`den-bootstrap` burns the caches in with `--option` flags read straight off
+`modules/nix/caches.nix` at eval time — no values re-typed by hand — and it
+never reboots by itself. When it's done: remove the install media and reboot
+manually, then log in as `nazuna`:
+
+```bash
+nix run /home/nazuna/Nazunix#den-warm   # needed on dazai, harmless on yamori
+nh os switch
+```
+
+Day-2 rebuilds pull the latest `main` fast-forward-only and switch:
+
+```bash
+nix run /home/nazuna/Nazunix#den-rebuild
+```
 
 ## 7. Still open
 

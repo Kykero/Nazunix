@@ -86,7 +86,7 @@ the only place anything gets evaluated or built.
 | **7. Install yamori** | — | disko → `nixos-install .#yamori-base` with `--option` caches → boot → `switch .#yamori` | machine boots |
 | **8. Install dazai** | — | same, then `den-warm`, then full | machine boots |
 | **9. Secrets** | `modules/secrets/sops.nix`, `.sops.yaml`, `secrets/*.yaml` | `ssh-to-age` from host keys post-boot, `hashedPasswordFile` replaces the temporary `initialPassword` | switch on real hardware |
-| **10. Desktop** | `modules/desktop/{niri,niri-home,portals}.nix` | niri session in `nixos`, KDL config in `homeManager`, xdg portals | CI eval + build (**niri cache required**) |
+| **10. Desktop** | `modules/desktop/{niri,niri-home,portals}.nix`, `modules/homes/mailspring.nix` | niri session in `nixos`, KDL config in `homeManager`, xdg portals; Mailspring as the email client (home aspect, account setup stays out of the repo) | CI eval + build (**niri cache required**) |
 | **11. Fleet** | `modules/nix/distributed.nix` | `yamori` accepts builds (`builder`), `dazai` delegates (`build-client`), user `nixremote`, `ssh-ng`, resolved via `yamori.local` | real cross-machine test |
 
 `yamori` is installed **before** `dazai`: the 8 GB laptop should not be left

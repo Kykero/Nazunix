@@ -6,12 +6,13 @@
 # create a brand-new host, not just install one already declared in
 # modules/hosts.nix. New hosts are rendered from templates/host/*.in and
 # spliced into modules/hosts.nix just above the
-# "den-bootstrap inserts new hosts above this line" marker. The script
-# never commits or pushes: it only stages (git add -A) so the flake sees
-# the new/updated files, installs from that local checkout, then copies the
-# checkout (staged changes included) to the target's /home/<user>/Nazunix
+# "den-bootstrap inserts new hosts above this line" marker. By default the
+# script never commits or pushes: it only stages (git add -A) so the flake
+# sees the new/updated files, installs from that local checkout, then copies
+# the checkout (staged changes included) to the target's /home/<user>/Nazunix
 # for the operator to commit and push after first boot, with their own
-# identity and signing key.
+# identity and signing key. With git.env on the USB stick (below) that
+# commit and push happen from the ISO instead.
 #
 # v3 adds an optional `nazunix-keys/` directory looked up on removable
 # media (or pointed at with NAZUNIX_KEYS=/path). Nothing in it ever enters
@@ -23,6 +24,14 @@
 #                                       the machine identity (and the age key
 #                                       sops derives from it) is stable from
 #                                       the first boot
+#   git.env                             optional: GIT_NAME=... and GIT_EMAIL=...
+#                                       (the GitHub noreply address). With the
+#                                       user key present, the generated host
+#                                       files are committed (SSH-signed) and
+#                                       pushed from the ISO once the install
+#                                       succeeded, so CI evaluates the host
+#                                       before its first boot. Without it the
+#                                       v2 behaviour stands: staged only.
 # GitHub's published ed25519 host key is written to known_hosts on both
 # sides so the first push never faces a TOFU prompt.
 { inputs, ... }:
@@ -35,6 +44,7 @@
         runtimeInputs = [
           pkgs.gum
           pkgs.git
+          pkgs.openssh # ssh for the push, ssh-keygen -Y for commit signing
           pkgs.curl
           pkgs.util-linux
           pkgs.procps
@@ -164,6 +174,23 @@
             gum style --foreground 220 "no nazunix-keys directory found -- keys will not be installed"
           fi
 
+          # -- step 1c: git identity from git.env -> commit + push from the ISO --
+          # Only the two expected keys are read (no sourcing of arbitrary
+          # shell); both plus the user key are required to offer the push.
+          git_push=0
+          git_name=""
+          git_email=""
+          if [ "$user_key" -eq 1 ] && [ -f "$KEYS/git.env" ]; then
+            git_name=$(sed -nE 's/^GIT_NAME=(.*)$/\1/p' "$KEYS/git.env" | head -1)
+            git_email=$(sed -nE 's/^GIT_EMAIL=(.*)$/\1/p' "$KEYS/git.env" | head -1)
+            if [ -n "$git_name" ] && [ -n "$git_email" ]; then
+              if gum confirm "commit (signed) and push the generated host files from the ISO as $git_name?"; then
+                git_push=1
+              fi
+            else
+              gum style --foreground 220 "git.env found but GIT_NAME/GIT_EMAIL missing -- no commit from the ISO"
+            fi
+          fi
           # -- step 2: host ---------------------------------------------------
           existing_hosts=()
           for d in "$SRC"/modules/hosts/*/; do
@@ -351,6 +378,36 @@
             --option extra-substituters "$subs" \
             --option extra-trusted-public-keys "$keys"
 
+          # -- step 12b: commit + push from the ISO (git.env + user key) -----------
+          # Only after a successful install, so a host that never made it to
+          # disk never reaches main. Local git config only: it travels with
+          # the checkout to the target, where the signing key lives at the
+          # same path under the user's home; on the ISO the key path is
+          # overridden per invocation.
+          pushed=0
+          if [ "$git_push" -eq 1 ]; then
+            git -C "$SRC" config user.name "$git_name"
+            git -C "$SRC" config user.email "$git_email"
+            git -C "$SRC" config gpg.format ssh
+            git -C "$SRC" config user.signingkey "/home/$user/.ssh/id_ed25519"
+            git -C "$SRC" config commit.gpgsign true
+            git -C "$SRC" remote set-url --push origin git@github.com:Kykero/Nazunix
+            if git -C "$SRC" diff --cached --quiet; then
+              gum style --foreground 220 "nothing to commit -- host files unchanged"
+            else
+              git -C "$SRC" -c user.signingkey=/root/.ssh/id_ed25519 \
+                commit -q -m "feat($host): hardware and disk from den-bootstrap" \
+                || die "commit failed -- fix it from $SRC and re-run"
+              if git -C "$SRC" push -q origin HEAD:main; then
+                pushed=1
+                gum style --foreground 42 "pushed to main -- CI is evaluating $host"
+              else
+                gum style --foreground 220 \
+                  "push failed (network? key not registered on GitHub?) -- commit kept, push it after first boot"
+              fi
+            fi
+          fi
+
           # -- step 13: copy the checkout onto the target --------------------------
           mkdir -p "/mnt/home/$user" # never chmod a home nixos-install already created
           cp -a "$SRC" "/mnt/home/$user/Nazunix"
@@ -382,12 +439,20 @@
           nixos-enter --root /mnt -c "passwd $user"
 
           # -- step 15: done --------------------------------------------------------
-          gum style --foreground 42 --border double --padding "1 2" \
-            "done. remove installation media and reboot, then log in as $user:" \
-            "  cd ~/Nazunix && git status" \
-            "  # commit the new/updated host files with your own identity and push -- CI evaluates" \
-            "  nix run ~/Nazunix#den-warm" \
-            "  nh os switch"
+          if [ "$pushed" -eq 1 ]; then
+            gum style --foreground 42 --border double --padding "1 2" \
+              "done. remove installation media and reboot, then log in as $user:" \
+              "  # host files already committed and pushed -- check the CI run" \
+              "  nix run ~/Nazunix#den-warm" \
+              "  nh os switch"
+          else
+            gum style --foreground 42 --border double --padding "1 2" \
+              "done. remove installation media and reboot, then log in as $user:" \
+              "  cd ~/Nazunix && git status" \
+              "  # commit the new/updated host files with your own identity and push -- CI evaluates" \
+              "  nix run ~/Nazunix#den-warm" \
+              "  nh os switch"
+          fi
         '';
       };
     };

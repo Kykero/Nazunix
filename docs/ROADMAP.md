@@ -140,10 +140,12 @@ Nothing in it ever enters the repo:
 |---|---|
 | `id_ed25519`, `id_ed25519.pub` | user SSH key: git push and commit signing. Installed to `/root/.ssh` on the ISO and to `/home/<user>/.ssh` on the target, with GitHub's published host key in `known_hosts` |
 | `ssh_host_ed25519_key`, `.pub` (optional) | pre-seeded sshd host key, so the machine identity — and the age key phase 9 derives from it — is stable from the first boot |
+| `git.env` (optional) | `GIT_NAME=…` and `GIT_EMAIL=…` (the GitHub noreply address). Together with the user key, the generated host files are committed (SSH-signed) and pushed from the ISO once the install succeeded, so CI evaluates the host before its first boot. The git identity is written to the checkout's local config only and travels with it to the target |
 
-Nothing is committed from the ISO: the checkout with the generated files
-lands in `/home/<user>/Nazunix`. After removing the media and rebooting, log
-in and finish from the machine:
+Without `git.env`, nothing is committed from the ISO: the checkout with the
+generated files lands in `/home/<user>/Nazunix`. After removing the media and
+rebooting, log in and finish from the machine (skip the commit and push if
+the ISO already did them):
 
 ```bash
 cd ~/Nazunix && git status          # generated host files, staged

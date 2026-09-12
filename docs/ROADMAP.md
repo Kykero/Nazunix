@@ -129,6 +129,18 @@ irreversible confirmation. Caches are burned in with `--option` flags read
 from the evaluated config — nothing re-typed by hand. It ends by asking for
 the user's password and never reboots by itself.
 
+### Keys from the USB stick
+
+Optionally, a `nazunix-keys/` directory on removable media (a second stick,
+or a Ventoy data partition next to the ISO — a dd-written ISO is read-only)
+is picked up automatically; `NAZUNIX_KEYS=/path` points at it explicitly.
+Nothing in it ever enters the repo:
+
+| File | Role |
+|---|---|
+| `id_ed25519`, `id_ed25519.pub` | user SSH key: git push and commit signing. Installed to `/root/.ssh` on the ISO and to `/home/<user>/.ssh` on the target, with GitHub's published host key in `known_hosts` |
+| `ssh_host_ed25519_key`, `.pub` (optional) | pre-seeded sshd host key, so the machine identity — and the age key phase 9 derives from it — is stable from the first boot |
+
 Nothing is committed from the ISO: the checkout with the generated files
 lands in `/home/<user>/Nazunix`. After removing the media and rebooting, log
 in and finish from the machine:

@@ -1,4 +1,4 @@
-# den-bootstrap v2: interactive live-ISO installer/updater, run as root from
+# den-bootstrap v3: interactive live-ISO installer/updater, run as root from
 # the NixOS installer ISO. Unlike v1, nothing host-specific is baked in at
 # Nix eval time (no more den.hosts / inputs.self lookups here) -- hostname,
 # user, disk, RAM and caches are all discovered or chosen at run time
@@ -12,6 +12,19 @@
 # checkout (staged changes included) to the target's /home/<user>/Nazunix
 # for the operator to commit and push after first boot, with their own
 # identity and signing key.
+#
+# v3 adds an optional `nazunix-keys/` directory looked up on removable
+# media (or pointed at with NAZUNIX_KEYS=/path). Nothing in it ever enters
+# the repo; it only travels USB -> live ISO -> target disk:
+#   id_ed25519, id_ed25519.pub          user SSH key (git push + signing),
+#                                       installed to /root/.ssh on the ISO and
+#                                       to /home/<user>/.ssh on the target
+#   ssh_host_ed25519_key(.pub)          optional: pre-seeded sshd host key, so
+#                                       the machine identity (and the age key
+#                                       sops derives from it) is stable from
+#                                       the first boot
+# GitHub's published ed25519 host key is written to known_hosts on both
+# sides so the first push never faces a TOFU prompt.
 { inputs, ... }:
 {
   perSystem =
@@ -85,6 +98,70 @@
             fi
           else
             git clone https://github.com/Kykero/Nazunix "$SRC"
+          fi
+
+          # -- step 1b: optional nazunix-keys/ from removable media -------------
+          # Looked up in this order: NAZUNIX_KEYS=/path, a directory the
+          # graphical ISO already auto-mounted under /run/media, then every
+          # partition of a removable device mounted read-only for a look
+          # (a second stick, or a Ventoy data partition next to the ISO --
+          # a dd-written ISO is read-only, so the keys can't live on it).
+          # Whatever is found is copied to a root-only tmpdir so the media
+          # can be unmounted and pulled right away.
+          KEYS=""
+          github_known_host='github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl'
+
+          stash_keys() {
+            local from=$1
+            KEYS=$(mktemp -d /root/nazunix-keys.XXXXXX)
+            chmod 700 "$KEYS"
+            cp -a "$from/." "$KEYS/"
+          }
+
+          if [ -n "''${NAZUNIX_KEYS:-}" ]; then
+            [ -d "$NAZUNIX_KEYS" ] || die "NAZUNIX_KEYS=$NAZUNIX_KEYS is not a directory"
+            stash_keys "$NAZUNIX_KEYS"
+          else
+            for d in /run/media/*/*/nazunix-keys /media/*/nazunix-keys; do
+              if [ -d "$d" ]; then
+                stash_keys "$d"
+                break
+              fi
+            done
+          fi
+
+          if [ -z "$KEYS" ]; then
+            probe=$(mktemp -d)
+            while read -r part; do
+              mount -o ro "$part" "$probe" 2>/dev/null || continue
+              if [ -d "$probe/nazunix-keys" ]; then
+                stash_keys "$probe/nazunix-keys"
+              fi
+              umount "$probe"
+              [ -z "$KEYS" ] || break
+            done < <(lsblk -nrpo NAME,TYPE,RM | awk '$2 == "part" && $3 == "1" {print $1}')
+            rmdir "$probe"
+          fi
+
+          user_key=0
+          host_key=0
+          if [ -n "$KEYS" ]; then
+            if [ -f "$KEYS/id_ed25519" ] && [ -f "$KEYS/id_ed25519.pub" ]; then
+              user_key=1
+              # on the ISO too: commit signing and push (later steps) run here
+              install -d -m 700 /root/.ssh
+              install -m 600 "$KEYS/id_ed25519" /root/.ssh/id_ed25519
+              install -m 644 "$KEYS/id_ed25519.pub" /root/.ssh/id_ed25519.pub
+              grep -qF "$github_known_host" /root/.ssh/known_hosts 2>/dev/null \
+                || printf '%s\n' "$github_known_host" >> /root/.ssh/known_hosts
+            fi
+            if [ -f "$KEYS/ssh_host_ed25519_key" ] && [ -f "$KEYS/ssh_host_ed25519_key.pub" ]; then
+              host_key=1
+            fi
+            gum style --foreground 33 \
+              "nazunix-keys found: user key $([ "$user_key" -eq 1 ] && echo yes || echo no), host key $([ "$host_key" -eq 1 ] && echo yes || echo no)"
+          else
+            gum style --foreground 220 "no nazunix-keys directory found -- keys will not be installed"
           fi
 
           # -- step 2: host ---------------------------------------------------
@@ -278,6 +355,25 @@
           mkdir -p "/mnt/home/$user" # never chmod a home nixos-install already created
           cp -a "$SRC" "/mnt/home/$user/Nazunix"
           nixos-enter --root /mnt -c "chown -R $user:users /home/$user/Nazunix"
+
+          # -- step 13b: keys onto the target ---------------------------------------
+          if [ "$user_key" -eq 1 ]; then
+            install -d -m 700 "/mnt/home/$user/.ssh"
+            install -m 600 "$KEYS/id_ed25519" "/mnt/home/$user/.ssh/id_ed25519"
+            install -m 644 "$KEYS/id_ed25519.pub" "/mnt/home/$user/.ssh/id_ed25519.pub"
+            printf '%s\n' "$github_known_host" > "/mnt/home/$user/.ssh/known_hosts"
+            chmod 644 "/mnt/home/$user/.ssh/known_hosts"
+            nixos-enter --root /mnt -c "chown -R $user:users /home/$user/.ssh"
+            gum style --foreground 33 "installed user SSH key to /home/$user/.ssh"
+          fi
+          if [ "$host_key" -eq 1 ]; then
+            # sshd only generates host keys when none exist, so pre-seeding
+            # here makes the machine identity stable from the first boot
+            install -d -m 755 /mnt/etc/ssh
+            install -m 600 "$KEYS/ssh_host_ed25519_key" /mnt/etc/ssh/ssh_host_ed25519_key
+            install -m 644 "$KEYS/ssh_host_ed25519_key.pub" /mnt/etc/ssh/ssh_host_ed25519_key.pub
+            gum style --foreground 33 "installed sshd host key to /etc/ssh"
+          fi
 
           # -- step 14: password ---------------------------------------------------
           # NixOS manual's recommended way to set a first-login password;

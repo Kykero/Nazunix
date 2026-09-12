@@ -34,6 +34,12 @@
 #                                       v2 behaviour stands: staged only.
 # GitHub's published ed25519 host key is written to known_hosts on both
 # sides so the first push never faces a TOFU prompt.
+#
+# v3 also offers to install the full profile (<host>) right after <host>-base
+# in the same run: both toplevels are evaluated before the disk is wiped,
+# the -base generation stays in the boot menu as the fallback, and a failed
+# full install only degrades to the v2 path (den-warm + nh os switch after
+# reboot) instead of aborting.
 { inputs, ... }:
 {
   perSystem =
@@ -337,9 +343,24 @@
           # -- step 9: validate before touching the disk --------------------------
           entity="$host-base"
 
+          # The -base entity is always installed first: it is the known-good
+          # generation the boot menu falls back to. The full profile can be
+          # installed on top in the same run (a second nixos-install adds a
+          # generation, it does not replace the first one), which replaces
+          # den-warm + nh os switch after reboot.
+          full=0
+          if gum confirm "also install $host (full profile) right after $entity?"; then
+            full=1
+          fi
+
           gum spin --title "evaluating $entity toplevel..." --show-error -- \
             nix eval "$SRC#nixosConfigurations.$entity.config.system.build.toplevel.drvPath" \
             || die "eval failed for $entity -- fix the config before installing (nothing was touched)"
+          if [ "$full" -eq 1 ]; then
+            gum spin --title "evaluating $host toplevel..." --show-error -- \
+              nix eval "$SRC#nixosConfigurations.$host.config.system.build.toplevel.drvPath" \
+              || die "eval failed for $host -- fix the config before installing (nothing was touched)"
+          fi
 
           subs=$(nix eval --raw "$SRC#nixosConfigurations.$entity.config.nix.settings.substituters" \
             --apply 'builtins.concatStringsSep " "') \
@@ -360,9 +381,12 @@
           status_label=new
           [ "$new_host" -eq 0 ] && status_label=updated
 
+          entity_label=$entity
+          [ "$full" -eq 1 ] && entity_label="$entity, then $host (full)"
+
           gum style --foreground 196 --border double --padding "1 2" \
             "host: $host ($status_label)" \
-            "entity: $entity" \
+            "entity: $entity_label" \
             "user: $user" \
             "device: $device" \
             "RAM: $(free -h | awk '/Mem:/{print $2}'), zram: $zram_label" \
@@ -377,6 +401,25 @@
             --no-root-password --no-channel-copy \
             --option extra-substituters "$subs" \
             --option extra-trusted-public-keys "$keys"
+
+          # -- step 12a: full profile on top (optional, non-fatal) -----------------
+          # A failure here must not abort the run: the -base generation is
+          # already on disk and still needs the checkout, keys and password
+          # below to be usable. The operator then finishes with den-warm +
+          # nh os switch after reboot, exactly as without this step.
+          full_done=0
+          if [ "$full" -eq 1 ]; then
+            if nixos-install --root /mnt --flake "$SRC#$host" \
+                --no-root-password --no-channel-copy \
+                --option extra-substituters "$subs" \
+                --option extra-trusted-public-keys "$keys"; then
+              full_done=1
+              gum style --foreground 42 "$host (full) installed as the default boot generation; $entity stays in the boot menu"
+            else
+              gum style --foreground 220 \
+                "full install failed -- $entity stays bootable; run den-warm + nh os switch after reboot"
+            fi
+          fi
 
           # -- step 12b: commit + push from the ISO (git.env + user key) -----------
           # Only after a successful install, so a host that never made it to
@@ -439,20 +482,20 @@
           nixos-enter --root /mnt -c "passwd $user"
 
           # -- step 15: done --------------------------------------------------------
+          lines=("done. remove installation media and reboot, then log in as $user:")
           if [ "$pushed" -eq 1 ]; then
-            gum style --foreground 42 --border double --padding "1 2" \
-              "done. remove installation media and reboot, then log in as $user:" \
-              "  # host files already committed and pushed -- check the CI run" \
-              "  nix run ~/Nazunix#den-warm" \
-              "  nh os switch"
+            lines+=("  # host files already committed and pushed -- check the CI run")
           else
-            gum style --foreground 42 --border double --padding "1 2" \
-              "done. remove installation media and reboot, then log in as $user:" \
-              "  cd ~/Nazunix && git status" \
-              "  # commit the new/updated host files with your own identity and push -- CI evaluates" \
-              "  nix run ~/Nazunix#den-warm" \
-              "  nh os switch"
+            lines+=("  cd ~/Nazunix && git status")
+            lines+=("  # commit the new/updated host files with your own identity and push -- CI evaluates")
           fi
+          if [ "$full_done" -eq 1 ]; then
+            lines+=("  # $host (full) is the default boot generation -- nothing else to switch")
+          else
+            lines+=("  nix run ~/Nazunix#den-warm")
+            lines+=("  nh os switch")
+          fi
+          gum style --foreground 42 --border double --padding "1 2" "''${lines[@]}"
         '';
       };
     };

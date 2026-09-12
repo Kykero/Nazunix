@@ -129,6 +129,12 @@ irreversible confirmation. Caches are burned in with `--option` flags read
 from the evaluated config — nothing re-typed by hand. It ends by asking for
 the user's password and never reboots by itself.
 
+It also offers to install the full profile (`<host>`) right after `<host>-base`
+in the same run. Both toplevels are evaluated before the wipe; the `-base`
+generation stays in the boot menu as the known-good fallback, and a failed
+full install does not abort the run — it only leaves `den-warm` +
+`nh os switch` for after the reboot, as before.
+
 ### Keys from the USB stick
 
 Optionally, a `nazunix-keys/` directory on removable media (a second stick,
@@ -145,7 +151,8 @@ Nothing in it ever enters the repo:
 Without `git.env`, nothing is committed from the ISO: the checkout with the
 generated files lands in `/home/<user>/Nazunix`. After removing the media and
 rebooting, log in and finish from the machine (skip the commit and push if
-the ISO already did them):
+the ISO already did them, and the last two lines if it already installed
+the full profile):
 
 ```bash
 cd ~/Nazunix && git status          # generated host files, staged

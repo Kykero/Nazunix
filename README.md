@@ -109,6 +109,9 @@ Day-2 rebuilds:
 nix run ~/Nazunix#den-rebuild       # ff-only pull + nh os switch
 ```
 
+What it does, its arguments and its failure modes:
+[docs/den-rebuild.md](docs/den-rebuild.md).
+
 ## Keyboard (AZERTY) in niri
 
 niri binds match the unshifted keysym, so the defaults are transposed in

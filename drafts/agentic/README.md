@@ -1,0 +1,32 @@
+# drafts/agentic — agentic tooling for the `nazuna` home
+
+Working notes for everything that runs, drives or supports LLM agents on the
+fleet: the agent runtimes themselves, their orchestration layer, and the
+forge CLIs the agents call. Nothing here is evaluated; CI is the only judge.
+When a note graduates into `modules/homes/` or `modules/apps/`, delete it here.
+
+| Note | Covers | Status |
+| --- | --- | --- |
+| `claude-code-tooling.md` | Claude Code CLI, plugins (superpowers, caveman), SuperClaude, MCP servers (serena, context7), rtk, graphify | snapshot of the Windows setup before wipe, 2026-09-22 |
+| `herdr.md` | herdr as orchestration layer, package source, open questions | summary; long form in the two `herdr-claude-multi-account*.md` |
+| `herdr-claude-multi-account.md` | original handoff v1 (French) | superseded in parts, kept for context |
+| `herdr-claude-multi-account-review.md` | handoff v2 confronted to the repo at `e6f0762` | reference for the `home-claude` aspect |
+| `gh.md` | GitHub CLI: package, auth, what agents need from it | ready to implement in phase 7 |
+| `glab.md` | GitLab CLI: package, auth, self-hosted host handling | ready to implement in phase 7 |
+
+## Shared constraints
+
+- **Packages come from two inputs.** Ordinary CLIs (`gh`, `glab`, `uv`,
+  `nodejs`) from `nixpkgs`. Agent runtimes (`claude-code`, `herdr`, optionally
+  `codex`) from `github:numtide/llm-agents.nix`, without `follows` (see the
+  review draft §2 for why). One aspect per tool, dendritic style.
+- **Auth is never in the repo.** `gh` and `glab` keep tokens in their own
+  stores; Claude keeps OAuth in `~/.claude.json`. Until sops-nix lands
+  (roadmap), auth is a manual post-install step, listed per note.
+- **Agents call the forge CLIs, so both must be on `PATH` for the wrapped
+  `claude` binaries** (`claude-a`/`claude-b`), not only in an interactive
+  shell. Put them in `home.packages`, not in a shell-only `programs.*`.
+- **Not carried over from Windows:** OpenAI Codex app (`gpt-6-astra`,
+  computer-use plugins). Its output folder and state were wiped 2026-09-22. If
+  a second runtime is ever wanted on Nazunix, `llm-agents.nix` ships `codex`;
+  the multi-account design in the herdr drafts would need a third profile.

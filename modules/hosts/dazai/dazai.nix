@@ -5,6 +5,7 @@
   den.aspects.dazai-hw.includes = [
     den.aspects.boot-grub-efi
     den.aspects.zram
+    den.aspects.laptop-power
   ];
 
   # both entities run on this machine

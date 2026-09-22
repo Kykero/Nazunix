@@ -1,0 +1,174 @@
+# ~/.config/noctalia/config.toml -- Noctalia v5.1.0
+# Minimal vertical left bar + right dock + desktop weather/clock.
+# Hand-written layer: copy to ~/.config/noctalia/config.toml (hot-reloaded).
+# GUI changes land in ~/.local/state/noctalia/settings.toml and win over
+# this file; move that file away first or the old layout keeps showing.
+# Check with: noctalia config validate
+
+# -- Global look ---------------------------------------------------
+[shell.screen_corners]
+enabled = true
+size    = 20                       # 1..100
+
+# -- Location / weather (fill in your city) ------------------------
+[location]
+auto_locate = false
+address     = "CITY, COUNTRY"      # <-- placeholder, replace
+
+[weather]
+enabled = true
+unit    = "metric"                 # metric | imperial (code: weather_service.cpp useImperial)
+
+# -- Bar: thin, vertical, left, icons only -------------------------
+# The implicit bar is named "default" (config_types.h BarConfig::name).
+# Do NOT also keep a [bar.main] from example.toml: it would be a 2nd bar.
+[bar.default]
+position           = "left"
+thickness          = 38
+background_opacity = 0.75
+radius             = 14
+margin_edge        = 6
+margin_ends        = 6
+padding            = 10
+widget_spacing     = 10
+capsule            = false
+font_scale         = 0.85
+font_weight        = 600
+shadow             = true
+
+start  = ["control-center", "workspaces", "tray"]
+center = ["clock-icon", "clock", "date-icon", "date"]
+end    = ["network", "audio_visualizer", "media", "weather",
+          "notifications", "volume", "session"]
+
+# -- Bar widgets ---------------------------------------------------
+[widget.control-center]
+glyph = "noctalia"
+
+[widget.workspaces]
+style              = "regular"
+show_labels        = false
+pill_scale         = 0.6
+active_pill_size   = 2.6
+inactive_pill_size = 1.0
+focused_color      = "primary"
+occupied_color     = "on_surface_variant"
+empty_color        = "outline"
+hide_when_empty    = false
+
+[widget.tray]
+drawer       = true
+hide_passive = true
+
+# Clock has no glyph option: a custom_button draws the icon above it.
+[widget.clock-icon]
+type  = "custom_button"
+glyph = "clock"
+
+[widget.clock-icon.actions]
+left = "panel-toggle control-center calendar"
+
+[widget.clock]
+format          = "{:%H:%M}"
+vertical_format = "{:%H\n%M}"
+tooltip_format  = "{:%A, %d %B %Y}"
+
+[widget.date-icon]
+type  = "custom_button"
+glyph = "calendar"
+
+[widget.date-icon.actions]
+left = "panel-toggle control-center calendar"
+
+[widget.date]
+type            = "clock"
+format          = "{:%d/%m}"
+vertical_format = "{:%d\n%m}"
+tooltip_format  = "{:%A, %d %B %Y}"
+
+[widget.network]
+show_label = false                 # else a 3-char SSID is stacked under the glyph
+
+[widget.audio_visualizer]
+width          = 60                # on a vertical bar = length along the bar
+bands          = 12
+mirrored       = true
+centered       = true
+show_when_idle = false             # true = always visible like the screenshot
+
+[widget.media]
+hide_when_no_media = true          # vertical bar = artwork only
+
+[widget.weather]
+show_temperature = true            # vertical bar always renders glyph + "21°"
+
+[widget.notifications]
+hide_when_no_unread = false
+
+[widget.volume]
+show_label = false
+
+[widget.session]
+glyph = "shutdown"
+
+# -- Dock: right edge, floating, launcher at the bottom ------------
+[dock]
+enabled            = true
+position           = "right"
+smart_auto_hide    = true          # shown on empty workspace, hidden over windows
+auto_hide          = false
+reserve_space      = false
+icon_size          = 40
+radius             = 18
+margin_edge        = 8             # > 0 floats the dock off the edge
+background_opacity = 0.75
+launcher_position  = "end"
+launcher_icon      = "grid-dots"
+show_running       = true
+magnification      = false
+pinned             = ["zen-beta", "com.mitchellh.ghostty"]   # .desktop file names
+
+# -- Desktop widgets (cx/cy = centre, logical px) ------------------
+# `output` omitted on purpose: empty = primary output. A wrong
+# connector name hides the widget (desktop_widget_layout.h).
+[desktop_widgets]
+enabled      = true
+widget_order = ["weather_main", "clock_main", "date_main"]
+
+[desktop_widgets.widget.weather_main]
+type = "weather"
+cx   = 190.0
+cy   = 90.0
+
+[desktop_widgets.widget.weather_main.settings]
+background    = false
+shadow        = true
+show_forecast = false
+
+[desktop_widgets.widget.clock_main]
+type       = "clock"
+cx         = 1130.0
+cy         = 620.0
+box_width  = 260.0                 # content is scaled to fit the box
+box_height = 100.0
+
+[desktop_widgets.widget.clock_main.settings]
+clock_style = "digital"
+format      = "{:%H:%M}"
+center_text = true
+background  = false
+shadow      = true
+
+[desktop_widgets.widget.date_main]
+type       = "clock"
+cx         = 1130.0
+cy         = 692.0
+box_width  = 220.0                 # unboxed it would render at the same 56px as the time
+box_height = 34.0
+
+[desktop_widgets.widget.date_main.settings]
+clock_style = "digital"
+format      = "{:%A, %d %B}"
+center_text = true
+background  = false
+shadow      = true

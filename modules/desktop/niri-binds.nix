@@ -155,7 +155,7 @@
       "Mod+Page_Down".action.focus-workspace-down = [ ];
       "Mod+Page_Up".action.focus-workspace-up = [ ];
       "Mod+U".action.focus-workspace-down = [ ];
-      # Mod+I opens Noctalia's settings instead (below); Mod+Page_Up remains
+      # Mod+I opens Noctalia's settings instead (top of the file); Mod+Page_Up remains
       "Mod+Ctrl+Page_Down".action.move-column-to-workspace-down = [ ];
       "Mod+Ctrl+Page_Up".action.move-column-to-workspace-up = [ ];
       "Mod+Ctrl+U".action.move-column-to-workspace-down = [ ];

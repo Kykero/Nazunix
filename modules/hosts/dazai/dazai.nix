@@ -6,6 +6,7 @@
     den.aspects.boot-grub-efi
     den.aspects.zram
     den.aspects.laptop-power
+    den.aspects.firmware
   ];
 
   # both entities run on this machine

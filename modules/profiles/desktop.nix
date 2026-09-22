@@ -9,6 +9,7 @@
       den.aspects.desktop-niri-window-rules
       den.aspects.desktop-terminal
       den.aspects.desktop-audio
+      den.aspects.desktop-power
       den.aspects.desktop-noctalia
       den.aspects.desktop-greeter
     ];

@@ -37,6 +37,11 @@
         action.spawn-sh = "noctalia msg panel-toggle launcher";
         hotkey-overlay.title = "Run an Application: noctalia";
       };
+      # settings is a window in Noctalia v5, not a panel: no panel-toggle
+      "Mod+I" = {
+        action.spawn-sh = "noctalia msg settings-toggle";
+        hotkey-overlay.title = "Settings: noctalia";
+      };
       "Super+Alt+L" = {
         action.spawn-sh = "noctalia msg session lock";
         hotkey-overlay.title = "Lock the Screen: noctalia";
@@ -150,7 +155,7 @@
       "Mod+Page_Down".action.focus-workspace-down = [ ];
       "Mod+Page_Up".action.focus-workspace-up = [ ];
       "Mod+U".action.focus-workspace-down = [ ];
-      "Mod+I".action.focus-workspace-up = [ ];
+      # Mod+I opens Noctalia's settings instead (below); Mod+Page_Up remains
       "Mod+Ctrl+Page_Down".action.move-column-to-workspace-down = [ ];
       "Mod+Ctrl+Page_Up".action.move-column-to-workspace-up = [ ];
       "Mod+Ctrl+U".action.move-column-to-workspace-down = [ ];

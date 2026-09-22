@@ -257,9 +257,14 @@
         allow-inhibiting = false;
       };
 
-      # quit shows a confirmation dialog
+      # quit shows a confirmation dialog; the escape hatch if Noctalia is down
       "Mod+Shift+E".action.quit = [ ];
-      "Ctrl+Alt+Delete".action.quit = [ ];
+
+      # Noctalia's session menu: lock, log out, suspend, reboot, shut down
+      "Ctrl+Alt+Delete" = {
+        action.spawn-sh = "noctalia msg panel-toggle session";
+        hotkey-overlay.title = "Session Menu: noctalia";
+      };
 
       "Mod+Shift+P".action.power-off-monitors = [ ];
     };

@@ -15,6 +15,7 @@
       den.aspects.desktop-bluetooth
       den.aspects.desktop-noctalia
       den.aspects.desktop-greeter
+      den.aspects.desktop-vm
     ];
   };
 }

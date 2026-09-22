@@ -1,4 +1,4 @@
-# niri key binds: the v25.08 default-config.kdl binds section, transposed to
+# niri key binds: the v26.04 default-config.kdl binds section, transposed to
 # an AZERTY (xkb "fr") keyboard.
 #
 # niri matches a bind against the *unshifted* keysym of the pressed key, so a
@@ -51,7 +51,7 @@
 
       # volume keys for PipeWire & WirePlumber
       "XF86AudioRaiseVolume" = {
-        action.spawn-sh = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+";
+        action.spawn-sh = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0";
         allow-when-locked = true;
       };
       "XF86AudioLowerVolume" = {
@@ -64,6 +64,24 @@
       };
       "XF86AudioMicMute" = {
         action.spawn-sh = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+        allow-when-locked = true;
+      };
+
+      # media keys for any MPRIS player, through playerctl
+      "XF86AudioPlay" = {
+        action.spawn-sh = "playerctl play-pause";
+        allow-when-locked = true;
+      };
+      "XF86AudioStop" = {
+        action.spawn-sh = "playerctl stop";
+        allow-when-locked = true;
+      };
+      "XF86AudioPrev" = {
+        action.spawn-sh = "playerctl previous";
+        allow-when-locked = true;
+      };
+      "XF86AudioNext" = {
+        action.spawn-sh = "playerctl next";
         allow-when-locked = true;
       };
 
@@ -201,10 +219,14 @@
       "Mod+semicolon".action.expel-window-from-column = [ ];
 
       "Mod+R".action.switch-preset-column-width = [ ];
-      "Mod+Shift+R".action.switch-preset-window-height = [ ];
+      "Mod+Shift+R".action.switch-preset-column-width-back = [ ];
+      "Mod+Ctrl+Shift+R".action.switch-preset-window-height = [ ];
       "Mod+Ctrl+R".action.reset-window-height = [ ];
       "Mod+F".action.maximize-column = [ ];
       "Mod+Shift+F".action.fullscreen-window = [ ];
+
+      # maximize-column keeps gaps and borders, this one expands to the edges
+      "Mod+M".action.maximize-window-to-edges = [ ];
 
       # expand the focused column to the space left by other visible columns
       "Mod+Ctrl+F".action.expand-column-to-available-width = [ ];

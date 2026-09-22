@@ -28,9 +28,11 @@ Single user account: `nazuna`.
 
 **Stack:** `nixos-unstable` · `flake-parts` · `import-tree` · **den** (flake
 module) · **home-manager as a NixOS module** (not standalone, so a VM boots
-the complete environment) · **disko** · sops-nix (later) · niri-flake (later).
-Every input `follows` nixpkgs except `niri` — no `follows` there, or the
-8 GB laptop loses `niri.cachix.org` and compiles a compositor from source.
+the complete environment) · **disko** · sops-nix (later) · niri-flake (its
+home-manager settings module only). Every input `follows` nixpkgs. The
+compositor is nixpkgs' `pkgs.niri`, so cache.nixos.org has it: niri-flake's
+own package lags upstream and no longer builds against current nixpkgs,
+and its cachix would only hit with niri-flake's exact nixpkgs anyway.
 
 **Two-profile system:** a schema option `profile` (`base` | `full`, default
 `full`) plus a pointcut that turns the option value into the matching
@@ -86,7 +88,7 @@ the only place anything gets evaluated or built.
 | **7. Install yamori** | `modules/hosts/yamori/hardware.nix` | `den-bootstrap` → pick `yamori`, its disk → review generated files → install → reboot → commit + push the generated files → `nh os switch` to `yamori` | machine boots, CI green |
 | **8. Install dazai** | `modules/hosts/dazai/hardware.nix` | same with `dazai`, then `den-warm` before `nh os switch` | machine boots, CI green |
 | **9. Secrets** | `modules/secrets/sops.nix`, `.sops.yaml`, `secrets/*.yaml` | `ssh-to-age` from host keys post-boot, `hashedPasswordFile` replaces the password typed at install time | switch on real hardware |
-| **10. Desktop** | `modules/desktop/{niri,niri-home,niri-binds,terminal,audio,noctalia,greeter}.nix`, `modules/profiles/desktop.nix`, `modules/system/keyboard-fr.nix`, `modules/homes/mailspring.nix` | niri session (niri-flake, `niri-stable`), AZERTY-transposed default binds in `homeManager` via `provides.to-users`, PipeWire, Noctalia shell (`pkgs.noctalia`, autostart only, no declarative settings) and Noctalia greeter (nixpkgs `services.displayManager.noctalia-greeter`); Mailspring later | CI eval (**niri cache required**), then real boot on `yamori` |
+| **10. Desktop** | `modules/desktop/{niri,niri-home,niri-binds,terminal,audio,noctalia,greeter}.nix`, `modules/profiles/desktop.nix`, `modules/system/keyboard-fr.nix`, `modules/homes/mailspring.nix` | niri session (nixpkgs `programs.niri`, v26.04) with niri-flake's settings module, AZERTY-transposed default binds in `homeManager` via `provides.to-users`, PipeWire, Noctalia shell (`pkgs.noctalia`, autostart only, no declarative settings) and Noctalia greeter (nixpkgs `services.displayManager.noctalia-greeter`); Mailspring later | CI eval + `niri validate` build, then real boot on `yamori` |
 | **11. Fleet** | `modules/nix/distributed.nix` | `yamori` accepts builds (`builder`), `dazai` delegates (`build-client`), user `nixremote`, `ssh-ng`, resolved via `yamori.local` | real cross-machine test |
 
 `yamori` is installed **before** `dazai`: the 8 GB laptop should not be left

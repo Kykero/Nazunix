@@ -4,7 +4,7 @@
     yamori.users.nazuna = { };   # desktop, builder
 
     # install gateways: same machines, minimal profile.
-    # installed first so /etc/nix/nix.conf knows the caches before full pulls niri
+    # installed first so /etc/nix/nix.conf knows the caches before full pulls the desktop
     dazai-base = {
       hostName = "dazai";
       profile = "base";

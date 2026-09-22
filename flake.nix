@@ -18,7 +18,11 @@
     # ── coming later, kept here so this file never needs rethinking ──
     # sops-nix = { url = "github:Mic92/sops-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     disko    = { url = "github:nix-community/disko"; inputs.nixpkgs.follows = "nixpkgs"; };
-    niri.url = "github:sodiboo/niri-flake";   # NO follows -- keeps niri.cachix.org
+    # only its home-manager settings module is used; the compositor is pkgs.niri
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

@@ -5,7 +5,7 @@
 
     disko.devices.disk.main = {
       type = "disk";
-      device = "/dev/nvme0n1"; # TODO: confirm with `lsblk` from the live ISO
+      device = "/dev/nvme0n1";
       content = {
         type = "gpt";
         partitions = {

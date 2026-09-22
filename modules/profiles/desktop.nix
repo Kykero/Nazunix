@@ -12,6 +12,7 @@
       den.aspects.desktop-mail
       den.aspects.desktop-audio
       den.aspects.desktop-power
+      den.aspects.desktop-bluetooth
       den.aspects.desktop-noctalia
       den.aspects.desktop-greeter
     ];

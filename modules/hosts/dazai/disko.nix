@@ -60,11 +60,6 @@
                     "noatime"
                   ];
                 };
-                "@swap" = {
-                  mountpoint = "/.swapvol";
-                  mountOptions = [ "noatime" ]; # never compress a swapfile
-                  swap.swapfile.size = "8G";
-                };
               };
             };
           };

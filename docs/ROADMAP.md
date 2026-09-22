@@ -46,12 +46,12 @@ flags once; installing `-base` first burns the caches in, so every rebuild
 after that needs no ceremony.
 
 **Storage (disko):** GPT · 1 GB FAT32 ESP · btrfs over the rest · subvolumes
-`@root @home @nix @log @swap` · `compress=zstd:1` (except `@swap`) · 8 GB
-swapfile on `@swap` · GRUB EFI (`nodev`) · systemd initrd · monthly btrfs
-scrub. No LUKS yet — deliberate; a reinstall with encryption is planned once
-the setup is validated. `dazai` additionally gets zram (50% zstd, priority
-over disk swap, tuned sysctls, `boot.tmp.useTmpfs = false`); `yamori` gets
-none — 32 GB is enough.
+`@root @home @nix @log` · `compress=zstd:1` · no disk swap (no hibernation
+anywhere, machines are shut down) · GRUB EFI (`nodev`) · systemd initrd ·
+monthly btrfs scrub. No LUKS yet — deliberate; a reinstall with encryption is planned once
+the setup is validated. `dazai` gets zram as its only swap (50% zstd,
+tuned sysctls, `boot.tmp.useTmpfs = false`); `yamori` gets none — 32 GB is
+enough.
 
 **GC:** `nh clean` via `programs.nh`, not `nix.gc`.
 
@@ -92,7 +92,7 @@ the only place anything gets evaluated or built.
 | **11. Fleet** | `modules/nix/distributed.nix` | `yamori` accepts builds (`builder`), `dazai` delegates (`build-client`), user `nixremote`, `ssh-ng`, resolved via `yamori.local` | real cross-machine test |
 
 `yamori` is installed **before** `dazai`: the 8 GB laptop should not be left
-compiling whatever the caches miss, with no disk swap yet.
+compiling whatever the caches miss.
 
 No password ever lives in the repo: `den-bootstrap` ends with
 `nixos-enter --root /mnt -c 'passwd <user>'`, the NixOS manual's recommended

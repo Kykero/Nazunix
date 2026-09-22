@@ -5,11 +5,10 @@
       enable = true;
       algorithm = "zstd";
       memoryPercent = 50;
-      priority = 100; # consumed before the disk swapfile (negative priority)
     };
 
     boot.kernel.sysctl = {
-      "vm.swappiness" = 150; # aggressive toward zram, disk only as spillover
+      "vm.swappiness" = 150; # zram is the only swap, use it eagerly
       "vm.page-cluster" = 0;
       "vm.watermark_boost_factor" = 0;
       "vm.watermark_scale_factor" = 125;

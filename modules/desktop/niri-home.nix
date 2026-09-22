@@ -30,7 +30,7 @@
         };
 
         layout = {
-          gaps = 16;
+          gaps = 12;
           center-focused-column = "never";
           # a lone column sits centered; from the second one on, "never" lays
           # the 0.5-wide columns side by side (50/50) with no recentering
@@ -44,6 +44,7 @@
             proportion = 0.5;
           };
           focus-ring = {
+            enable = false;
             width = 4;
             active.color = "#7fc8ff";
             inactive.color = "#505050";

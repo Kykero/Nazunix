@@ -22,6 +22,9 @@
           keyboard = {
             xkb.layout = "fr";
             numlock = true;
+            # faster than the 600 ms / 25 Hz default
+            repeat-delay = 200;
+            repeat-rate = 35;
           };
           touchpad = {
             tap = true;

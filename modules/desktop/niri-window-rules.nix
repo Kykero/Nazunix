@@ -8,6 +8,11 @@
 { ... }:
 {
   den.aspects.desktop-niri-window-rules.provides.to-users.homeManager = {
+    # server-side decorations: GTK apps (ghostty) drop their own headerbar and
+    # rounded shadow and learn they are tiled, so the rule below is the only
+    # thing rounding their corners
+    programs.niri.settings.prefer-no-csd = true;
+
     programs.niri.settings.window-rules = [
       {
         geometry-corner-radius = {

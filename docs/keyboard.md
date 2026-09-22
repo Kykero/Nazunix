@@ -7,8 +7,8 @@ width on `Mod+)` / `Mod+=`, consume/expel on `Mod+^` / `Mod+$`.
 
 | Keys | Action |
 |---|---|
-| `Mod+T` | terminal (ghostty) |
-| `Mod+D` | Noctalia launcher |
+| `Mod+T`, `Ctrl+Alt+T` | terminal (ghostty) |
+| `Mod+Space` | Noctalia launcher |
 | `Mod+I` | Noctalia settings |
 | `Super+Alt+L` | lock |
 | `Ctrl+Alt+Delete` | Noctalia session menu (lock, log out, suspend, reboot, shut down) |

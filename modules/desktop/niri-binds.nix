@@ -33,7 +33,11 @@
         action.spawn = "ghostty";
         hotkey-overlay.title = "Open a Terminal: ghostty";
       };
-      "Mod+D" = {
+      "Ctrl+Alt+T" = {
+        action.spawn = "ghostty";
+        hotkey-overlay.hidden = true; # same as Mod+T
+      };
+      "Mod+Space" = {
         action.spawn-sh = "noctalia msg panel-toggle launcher";
         hotkey-overlay.title = "Run an Application: noctalia";
       };

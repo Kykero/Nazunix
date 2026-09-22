@@ -8,6 +8,7 @@
       den.aspects.desktop-niri-binds
       den.aspects.desktop-niri-window-rules
       den.aspects.desktop-terminal
+      den.aspects.desktop-mail
       den.aspects.desktop-audio
       den.aspects.desktop-power
       den.aspects.desktop-noctalia

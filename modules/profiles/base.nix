@@ -5,6 +5,7 @@
       den.aspects.nix-settings
       den.aspects.nix-caches
       den.aspects.nix-nh
+      den.aspects.keyboard-fr
     ];
 
     nixos =

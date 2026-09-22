@@ -33,3 +33,13 @@ jobs:
           done
       - name: build phase-6 apps
         run: nix build .#den-bootstrap .#den-warm .#den-rebuild --no-link -L
+      # eval alone never runs `niri validate`: niri-flake checks the generated
+      # KDL in a derivation, so a bad bind only shows up when it is built.
+      # -base hosts have no niri, hence the explicit list.
+      - name: validate the niri config of the desktop hosts
+        run: |
+          set -euo pipefail
+          for h in dazai yamori; do
+            echo "── niri validate $h"
+            nix build --no-link -L               ".#nixosConfigurations.$h.config.home-manager.users.nazuna.xdg.configFile.niri-config.source"
+          done

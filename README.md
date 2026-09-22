@@ -23,12 +23,28 @@ enters the repo.
 
 | File | Role |
 |---|---|
-| `id_ed25519`, `id_ed25519.pub` | user SSH key, used to push and sign commits |
+| `id_ed25519`, `id_ed25519.pub` | the `nazuna` SSH key (one key, every device), registered on GitHub as authentication and signing key: pushes and signs commits |
 | `ssh_host_ed25519_key`, `.pub` | optional, pre-seeded sshd host key so the machine identity is stable |
 | `git.env` | optional, `GIT_NAME=…` and `GIT_EMAIL=…` (GitHub noreply address). With it, the generated host files are committed and pushed from the ISO |
 
 `NAZUNIX_KEYS=/path` points at the directory explicitly if auto-detection
 misses it.
+
+To create the stick from a machine with `ssh-keygen` and `gh`:
+
+```bash
+mkdir nazunix-keys && cd nazunix-keys
+ssh-keygen -t ed25519 -N "" -C nazuna -f id_ed25519          # no passphrase: the ISO uses it unattended
+ssh-keygen -t ed25519 -N "" -C "" -f ssh_host_ed25519_key
+printf 'GIT_NAME=Kykero
+GIT_EMAIL=<id>+Kykero@users.noreply.github.com
+' > git.env
+gh ssh-key add id_ed25519.pub --title nazuna --type authentication
+gh ssh-key add id_ed25519.pub --title nazuna --type signing   # needs the admin:ssh_signing_key scope
+```
+
+Delete `nazunix-keys/` from the stick once the machine is installed: the key
+then lives in `/home/nazuna/.ssh` there.
 
 ### 2. Boot the stick
 

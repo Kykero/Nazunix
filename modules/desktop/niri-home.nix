@@ -32,6 +32,9 @@
         layout = {
           gaps = 16;
           center-focused-column = "never";
+          # a lone column sits centered; from the second one on, "never" lays
+          # the 0.5-wide columns side by side (50/50) with no recentering
+          always-center-single-column = true;
           preset-column-widths = [
             { proportion = 0.33333; }
             { proportion = 0.5; }

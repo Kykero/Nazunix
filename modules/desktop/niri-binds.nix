@@ -19,7 +19,7 @@
 #                                                same physical keys ^¨  $£;
 #                                                [ ] need AltGr on fr
 #
-# Programs: alacritty (terminal.nix); launcher and lock go through Noctalia's
+# Programs: ghostty (terminal.nix); launcher and lock go through Noctalia's
 # IPC instead of fuzzel/swaylock.
 { ... }:
 {
@@ -30,8 +30,8 @@
 
       # terminal, app launcher, screen locker
       "Mod+T" = {
-        action.spawn = "alacritty";
-        hotkey-overlay.title = "Open a Terminal: alacritty";
+        action.spawn = "ghostty";
+        hotkey-overlay.title = "Open a Terminal: ghostty";
       };
       "Mod+D" = {
         action.spawn-sh = "noctalia msg panel-toggle launcher";

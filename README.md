@@ -36,9 +36,7 @@ To create the stick from a machine with `ssh-keygen` and `gh`:
 mkdir nazunix-keys && cd nazunix-keys
 ssh-keygen -t ed25519 -N "" -C nazuna -f id_ed25519          # no passphrase: the ISO uses it unattended
 ssh-keygen -t ed25519 -N "" -C "" -f ssh_host_ed25519_key
-printf 'GIT_NAME=Kykero
-GIT_EMAIL=<id>+Kykero@users.noreply.github.com
-' > git.env
+printf 'GIT_NAME=Kykero\nGIT_EMAIL=<id>+Kykero@users.noreply.github.com\n' > git.env
 gh ssh-key add id_ed25519.pub --title nazuna --type authentication
 gh ssh-key add id_ed25519.pub --title nazuna --type signing   # needs the admin:ssh_signing_key scope
 ```

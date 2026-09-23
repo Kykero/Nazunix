@@ -16,6 +16,18 @@
 
         # lets notification actions and the launcher activate windows
         debug."honor-xdg-activation-with-invalid-serial" = [ ];
+
+        # "stationary wallpaper" from Noctalia's niri page: the sharp wallpaper
+        # itself sits in niri's backdrop, so the overview shows it as is, and
+        # transparent workspaces keep it visible outside the overview too.
+        # Noctalia's blurred [backdrop] layer stays off (its default).
+        layer-rules = [
+          {
+            matches = [ { namespace = "^noctalia-wallpaper"; } ];
+            place-within-backdrop = true;
+          }
+        ];
+        layout.background-color = "transparent";
       };
     };
 }

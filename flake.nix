@@ -29,6 +29,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    # Vimzuna: the Neovim config (nvf + den), exported as packages
+    vimzuna = {
+      url = "github:Kykero/Vimzuna";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

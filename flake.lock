@@ -350,11 +350,11 @@
         "nvf": "nvf"
       },
       "locked": {
-        "lastModified": 1784042242,
-        "narHash": "sha256-GXXNyhmyVcAwcQaUn3lETSUAySiMYmWMJLvbPTr4y3g=",
+        "lastModified": 1790150595,
+        "narHash": "sha256-U7jwsNo1ry61vlx1hiA4Y8VHQOHQr0P3nhcgM6dH/jY=",
         "owner": "Kykero",
         "repo": "Vimzuna",
-        "rev": "10f389370db7df90c6856aeb98d085f6e87099f3",
+        "rev": "e2b47db66c44f700228843bc6dd6e7055051c8d1",
         "type": "github"
       },
       "original": {

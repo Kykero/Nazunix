@@ -11,6 +11,7 @@
       den.aspects.desktop-terminal
       den.aspects.desktop-browser
       den.aspects.desktop-mail
+      den.aspects.desktop-onedrive
       den.aspects.desktop-audio
       den.aspects.desktop-power
       den.aspects.desktop-bluetooth

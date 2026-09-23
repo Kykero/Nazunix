@@ -253,6 +253,8 @@
       "Mod+W".action.toggle-column-tabbed-display = [ ];
 
       "Print".action.screenshot = [ ];
+      # same region picker as Print, on the Windows shortcut
+      "Mod+Shift+S".action.screenshot = [ ];
       "Ctrl+Print".action.screenshot-screen = [ ];
       "Alt+Print".action.screenshot-window = [ ];
 

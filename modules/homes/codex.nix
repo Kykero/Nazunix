@@ -5,7 +5,7 @@
 # must come from cache.numtide.com (nix/caches.nix).
 { inputs, ... }:
 {
-  den.aspects.home-codex.homeManager =
+  den.aspects.home-codex.provides.to-users.homeManager =
     { pkgs, ... }:
     {
       home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex ];

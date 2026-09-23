@@ -5,7 +5,7 @@
 #   herdr integration install codex
 { inputs, ... }:
 {
-  den.aspects.home-herdr.homeManager =
+  den.aspects.home-herdr.provides.to-users.homeManager =
     { pkgs, ... }:
     {
       home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr ];

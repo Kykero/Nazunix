@@ -5,7 +5,7 @@
 # herdr's integration writes hooks into ~/.claude/settings.json.
 { inputs, ... }:
 {
-  den.aspects.home-claude-code.homeManager =
+  den.aspects.home-claude-code.provides.to-users.homeManager =
     { pkgs, ... }:
     {
       home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code ];

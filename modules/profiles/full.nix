@@ -4,6 +4,12 @@
     includes = [
       den.aspects.profile-base
       den.aspects.profile-desktop
+
+      # coding agents from llm-agents (numtide cache); kept off the -base
+      # gateways so the bootstrap install never pulls them
+      den.aspects.home-claude-code
+      den.aspects.home-codex
+      den.aspects.home-herdr
     ];
   };
 }

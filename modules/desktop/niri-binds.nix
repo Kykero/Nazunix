@@ -29,13 +29,9 @@
       "Mod+Shift+colon".action.show-hotkey-overlay = [ ];
 
       # terminal, app launcher, screen locker
-      "Mod+T" = {
-        action.spawn = "ghostty";
-        hotkey-overlay.title = "Open a Terminal: ghostty";
-      };
       "Ctrl+Alt+T" = {
         action.spawn = "ghostty";
-        hotkey-overlay.hidden = true; # same as Mod+T
+        hotkey-overlay.hidden = true; 
       };
       "Mod+Space" = {
         action.spawn-sh = "noctalia msg panel-toggle launcher";

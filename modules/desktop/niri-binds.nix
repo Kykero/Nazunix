@@ -228,9 +228,10 @@
       "Mod+Comma".action.consume-window-into-column = [ ];
       "Mod+semicolon".action.expel-window-from-column = [ ];
 
+      # R cycles the column width, Shift+R the window height (niri default);
+      # a height only shows with several windows stacked in the column
       "Mod+R".action.switch-preset-column-width = [ ];
-      "Mod+Shift+R".action.switch-preset-column-width-back = [ ];
-      "Mod+Ctrl+Shift+R".action.switch-preset-window-height = [ ];
+      "Mod+Shift+R".action.switch-preset-window-height = [ ];
       "Mod+Ctrl+R".action.reset-window-height = [ ];
       "Mod+F".action.maximize-column = [ ];
       "Mod+Shift+F".action.fullscreen-window = [ ];

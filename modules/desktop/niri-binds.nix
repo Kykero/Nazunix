@@ -37,6 +37,11 @@
         action.spawn-sh = "noctalia msg panel-toggle launcher";
         hotkey-overlay.title = "Run an Application: noctalia";
       };
+      # file manager (files.nix)
+      "Mod+E" = {
+        action.spawn = "nautilus";
+        hotkey-overlay.title = "Files: nautilus";
+      };
       # settings is a window in Noctalia v5, not a panel: no panel-toggle
       "Mod+I" = {
         action.spawn-sh = "noctalia msg settings-toggle";

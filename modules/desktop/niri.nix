@@ -11,6 +11,10 @@
     {
       programs.niri.enable = true;
 
+      # nixpkgs' Electron/Chromium wrappers (teams-for-linux, ...) switch to
+      # native Wayland when this is set, instead of going through XWayland
+      environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
       # the default binds call brightnessctl (XF86MonBrightness*), playerctl
       # (XF86Audio{Play,Stop,Prev,Next}) and wpctl (wireplumber, via pipewire
       # in audio.nix)

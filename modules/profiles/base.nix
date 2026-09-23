@@ -9,6 +9,7 @@
       den.aspects.neovim
       den.aspects.devenv
       den.aspects.direnv
+      den.aspects.tailscale
     ];
 
     nixos =

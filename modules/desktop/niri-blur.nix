@@ -7,10 +7,11 @@
 # programs.niri.settings (options...config.default); defining
 # programs.niri.config replaces that default, hence the explicit ++.
 #
-# Layers: Noctalia's niri page list (bar, notifications, dock, panels, OSD),
+# Layers: Noctalia's niri page list (bar, notifications, panels, OSD),
 # with xray off so they blur the windows beneath them, not only the
 # wallpaper. The wallpaper and the unframed desktop widgets are left out:
-# a blurred rectangle would show behind the widgets.
+# a blurred rectangle would show behind the widgets. The dock is left out
+# too: its surface stays mapped while auto-hidden, so the blur would linger.
 { inputs, ... }:
 {
   den.aspects.desktop-niri-blur.provides.to-users.homeManager =
@@ -25,7 +26,7 @@
         ])
         (plain "layer-rule" [
           (leaf "match" {
-            namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$";
+            namespace = "^noctalia-(bar-[^\"]+|notification|panel|attached-panel|osd)$";
           })
           (plain "background-effect" [
             (leaf "blur" true)

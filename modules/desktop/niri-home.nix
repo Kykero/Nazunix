@@ -33,7 +33,7 @@
         };
 
         layout = {
-          gaps = 12;
+          gaps = 8;
           center-focused-column = "never";
           # a lone column sits centered; from the second one on, "never" lays
           # the 0.5-wide columns side by side (50/50) with no recentering

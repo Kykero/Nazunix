@@ -7,6 +7,7 @@
       den.aspects.desktop-niri-home
       den.aspects.desktop-niri-binds
       den.aspects.desktop-niri-window-rules
+      den.aspects.desktop-niri-blur
       den.aspects.desktop-terminal
       den.aspects.desktop-browser
       den.aspects.desktop-mail

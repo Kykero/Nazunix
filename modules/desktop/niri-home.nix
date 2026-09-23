@@ -61,6 +61,9 @@
           };
         };
 
+        # the "Important Hotkeys" overlay stays on Mod+Shift+colon only
+        hotkey-overlay.skip-at-startup = true;
+
         screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
       };
     };

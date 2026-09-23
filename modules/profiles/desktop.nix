@@ -14,6 +14,7 @@
       den.aspects.desktop-files
       den.aspects.desktop-gtk-theme
       den.aspects.desktop-mail
+      den.aspects.desktop-teams
       den.aspects.desktop-onedrive
       den.aspects.desktop-audio
       den.aspects.desktop-power

@@ -7,6 +7,8 @@
       den.aspects.nix-nh
       den.aspects.keyboard-fr
       den.aspects.neovim
+      den.aspects.devenv
+      den.aspects.direnv
     ];
 
     nixos =

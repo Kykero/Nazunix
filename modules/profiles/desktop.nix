@@ -11,6 +11,7 @@
       den.aspects.desktop-fonts
       den.aspects.desktop-terminal
       den.aspects.desktop-browser
+      den.aspects.desktop-files
       den.aspects.desktop-mail
       den.aspects.desktop-onedrive
       den.aspects.desktop-audio

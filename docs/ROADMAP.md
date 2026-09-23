@@ -29,7 +29,8 @@ Single user account: `nazuna`.
 **Stack:** `nixos-unstable` · `flake-parts` · `import-tree` · **den** (flake
 module) · **home-manager as a NixOS module** (not standalone, so a VM boots
 the complete environment) · **disko** · sops-nix (later) · niri-flake (its
-home-manager settings module only). Every input `follows` nixpkgs. The
+home-manager settings module only). Every input `follows` nixpkgs, except `llm-agents`
+(numtide's cache only hits with its own pinned nixpkgs). The
 compositor is nixpkgs' `pkgs.niri`, so cache.nixos.org has it: niri-flake's
 own package lags upstream and no longer builds against current nixpkgs,
 and its cachix would only hit with niri-flake's exact nixpkgs anyway.

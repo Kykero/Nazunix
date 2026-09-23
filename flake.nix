@@ -34,6 +34,10 @@
       url = "github:Kykero/Vimzuna";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # agent runtimes (claude-code, codex, herdr), refreshed daily by numtide.
+    # No follows: their cache only hits with their own pinned nixpkgs, and
+    # codex/herdr are large Rust builds.
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =

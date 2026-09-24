@@ -18,4 +18,6 @@ the chosen disk, installs the `-base` gateway and then the full profile.
   relaunch loop, live niri tweaks, resetting the disk image
 - [Keyboard (AZERTY) in niri](docs/keyboard.md): transposed binds and the
   Noctalia shortcuts
+- [herdr and its plugins](docs/herdr.md): seeded config and Noctalia
+  theme, herdr-projects, zoetrope, Collie, and their one-time setup
 - [Roadmap](docs/ROADMAP.md): architecture and phase status

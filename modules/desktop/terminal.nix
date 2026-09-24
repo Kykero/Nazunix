@@ -29,6 +29,9 @@
         background-opacity = 0.85;
         window-padding-x = 10;
         window-padding-y = 10;
+        # ghostty's default fullscreen toggle; niri's Mod+Shift+F already
+        # does it (niri-binds.nix), and ctrl+enter then reaches the shell
+        keybind = [ "ctrl+enter=unbind" ];
       };
     };
   };

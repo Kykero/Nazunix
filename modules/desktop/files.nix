@@ -9,13 +9,26 @@
 # Noctalia's (@window_bg_color comes from noctalia.css). Scoped to
 # .nautilus-window, Nautilus' own style class; gtk.css from gtk-theme.nix
 # imports this sheet.
+#
+# Backspace goes back in history, as in Nautilus 3. GTK4 has no user
+# accels file and slot.back's triggers are hardcoded, so the string is
+# patched at build time (Nautilus is then built locally, not substituted).
+# The managed shortcut only fires once the focused widget passes the key
+# on, so Backspace still edits the location bar and the search entry.
 { ... }:
 {
   den.aspects.desktop-files = {
     nixos =
       { pkgs, ... }:
       {
-        environment.systemPackages = [ pkgs.nautilus ];
+        environment.systemPackages = [
+          (pkgs.nautilus.overrideAttrs (old: {
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace src/nautilus-window-slot.c \
+                --replace-fail '"<alt>Left|Back"' '"<alt>Left|BackSpace|Back"'
+            '';
+          }))
+        ];
         services.gvfs.enable = true;
       };
 

@@ -10,13 +10,15 @@
       den.aspects.devenv
       den.aspects.direnv
       den.aspects.tailscale
+      den.aspects.shell-git
+      den.aspects.shell-gh
+      den.aspects.shell-glab
     ];
 
     nixos =
       { pkgs, ... }:
       {
         environment.systemPackages = with pkgs; [
-          git
           vim
           btop
         ];

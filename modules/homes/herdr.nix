@@ -1,24 +1,40 @@
 # herdr: terminal multiplexer for coding agents. It runs the real `claude`
 # and `codex` found on PATH and tells which panes are working or blocked.
-# Session restore is an imperative, per-machine step:
-#   herdr integration install claude
-#   herdr integration install codex
+# Integrations and plugins are imperative, per-machine steps
+# (docs/herdr.md).
 #
-# The `terminal` theme draws herdr's UI from the host terminal's ANSI
-# palette, i.e. ghostty's Noctalia colours (terminal.nix), instead of a
-# built-in palette. herdr only writes its config when onboarding ends
-# (`onboarding = false`); that line is set here, so the read-only file is
-# never touched.
+# config.toml is seeded, not linked: plugins (herdr-projects `configure`,
+# zoetrope `setup-keys`) edit it in place, and herdr-projects refuses a
+# symlink. The seed is written only when the file is missing (or is still
+# the read-only link of an earlier generation) and is never overwritten. It
+# skips onboarding and picks the `terminal` theme, which draws herdr's UI
+# from the host terminal's ANSI palette, i.e. ghostty's Noctalia colours
+# (terminal.nix).
 { inputs, ... }:
 {
   den.aspects.home-herdr.provides.to-users.homeManager =
-    { pkgs, ... }:
     {
-      home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr ];
-
-      xdg.configFile."herdr/config.toml".source = (pkgs.formats.toml { }).generate "herdr-config.toml" {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      seed = (pkgs.formats.toml { }).generate "herdr-config.toml" {
         onboarding = false;
         theme.name = "terminal";
       };
+    in
+    {
+      home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr ];
+
+      home.activation.herdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        cfg="${config.xdg.configHome}/herdr/config.toml"
+        if [ ! -e "$cfg" ] || [ -L "$cfg" ]; then
+          run mkdir -p "$(dirname "$cfg")"
+          run rm -f "$cfg"
+          run install -m 644 ${seed} "$cfg"
+        fi
+      '';
     };
 }

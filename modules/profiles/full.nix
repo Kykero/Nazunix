@@ -11,6 +11,7 @@
       den.aspects.home-codex
       den.aspects.home-herdr
       den.aspects.home-zoetrope
+      den.aspects.home-herdr-projects
     ];
   };
 }

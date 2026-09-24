@@ -10,6 +10,7 @@
       den.aspects.home-claude-code
       den.aspects.home-codex
       den.aspects.home-herdr
+      den.aspects.home-zoetrope
     ];
   };
 }

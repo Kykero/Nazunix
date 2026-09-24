@@ -38,6 +38,12 @@
     # No follows: their cache only hits with their own pinned nixpkgs, and
     # codex/herdr are large Rust builds.
     llm-agents.url = "github:numtide/llm-agents.nix";
+    # Collie: phone UI for herdr's agents; only its release-wrapping package
+    # is used, so its nixpkgs pin is followed away
+    collie = {
+      url = "github:AltanS/collie";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

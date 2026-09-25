@@ -37,9 +37,11 @@
         action.spawn-sh = "noctalia msg panel-toggle launcher";
         hotkey-overlay.title = "Run an Application: noctalia";
       };
-      # file manager (files.nix)
+      # file manager (files.nix). Handed niri's activation token, Nautilus
+      # maps its first window about a second late; niri focuses new windows
+      # anyway, so the token is dropped.
       "Mod+E" = {
-        action.spawn = "nautilus";
+        action.spawn-sh = "unset XDG_ACTIVATION_TOKEN DESKTOP_STARTUP_ID; exec nautilus";
         hotkey-overlay.title = "Files: nautilus";
       };
       # settings is a window in Noctalia v5, not a panel: no panel-toggle

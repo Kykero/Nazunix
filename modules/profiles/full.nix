@@ -13,6 +13,9 @@
       den.aspects.home-zoetrope
       den.aspects.home-herdr-projects
       den.aspects.home-collie
+
+      # Claude Code tooling: plugins, SuperClaude, MCP servers, rtk, graphify
+      den.aspects.home-claude-plugins
     ];
   };
 }

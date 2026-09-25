@@ -28,6 +28,7 @@
 
           # processes, syscalls, memory
           strace
+          perf
           ltrace
           gdb
           lsof

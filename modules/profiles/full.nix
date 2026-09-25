@@ -20,6 +20,7 @@
       den.aspects.home-claude-mcp-context7
       den.aspects.home-claude-mcp-serena
       den.aspects.home-rtk
+      den.aspects.home-graphify
     ];
   };
 }

@@ -7,7 +7,6 @@ When a note graduates into `modules/homes/` or `modules/apps/`, delete it here.
 
 | Note | Covers | Status |
 | --- | --- | --- |
-| `claude-code-tooling.md` | Claude Code CLI, plugins (superpowers, caveman), SuperClaude, MCP servers (serena, context7), rtk, graphify | snapshot of the Windows setup before wipe, 2026-09-22 |
 | `herdr-claude-multi-account.md` | original handoff v1 (French) | superseded in parts, kept for context |
 | `herdr-claude-multi-account-review.md` | handoff v2 confronted to the repo at `e6f0762` | reference for a second Claude account (`claude-a`/`claude-b`), not implemented |
 | `gh.md` | GitHub CLI: package, auth, what agents need from it | ready to implement in phase 7 |
@@ -15,7 +14,10 @@ When a note graduates into `modules/homes/` or `modules/apps/`, delete it here.
 
 Graduated: `llm-agents` input and numtide cache (`flake.nix`,
 `modules/nix/caches.nix`), `claude-code`, `codex` and `herdr` as one aspect
-each in `modules/homes/`, single account per runtime.
+each in `modules/homes/`, single account per runtime. Claude Code tooling
+(was `claude-code-tooling.md`): superpowers and caveman plugins,
+SuperClaude, context7 and serena MCP servers, rtk and graphify, one aspect
+each in `modules/homes/`.
 
 ## Shared constraints
 

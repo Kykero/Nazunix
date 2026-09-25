@@ -12,6 +12,7 @@
       den.aspects.desktop-terminal
       den.aspects.desktop-browser
       den.aspects.desktop-files
+      den.aspects.desktop-pdf
       den.aspects.desktop-gtk-theme
       den.aspects.desktop-mail
       den.aspects.desktop-teams

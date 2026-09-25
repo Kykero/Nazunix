@@ -17,6 +17,7 @@
       # Claude Code tooling: plugins, SuperClaude, MCP servers, rtk, graphify
       den.aspects.home-claude-plugins
       den.aspects.home-superclaude
+      den.aspects.home-claude-mcp-context7
     ];
   };
 }

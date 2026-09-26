@@ -20,4 +20,6 @@ the chosen disk, installs the `-base` gateway and then the full profile.
   Noctalia shortcuts
 - [herdr and its plugins](docs/herdr.md): seeded config and Noctalia
   theme, herdr-projects, zoetrope, Collie, and their one-time setup
+- [OmO standalone](docs/omo.md): the `omo` agent on trial next to herdr,
+  Claude and ChatGPT sign-ins, where its state lives
 - [Roadmap](docs/ROADMAP.md): architecture and phase status

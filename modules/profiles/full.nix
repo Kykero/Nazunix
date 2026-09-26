@@ -10,6 +10,7 @@
       den.aspects.home-claude-code
       den.aspects.home-codex
       den.aspects.home-herdr
+      den.aspects.home-omo
       den.aspects.home-zoetrope
       den.aspects.home-herdr-projects
       den.aspects.home-collie

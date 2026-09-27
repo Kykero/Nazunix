@@ -16,11 +16,8 @@
       den.aspects.desktop-pdf
       den.aspects.desktop-gtk-theme
       den.aspects.desktop-mail
-      den.aspects.desktop-teams
-      den.aspects.desktop-whatsapp
+      den.aspects.profile-comms
       den.aspects.desktop-obsidian
-      den.aspects.desktop-claude-app
-      den.aspects.desktop-codex-app
       den.aspects.desktop-onedrive
       den.aspects.desktop-audio
       den.aspects.desktop-power

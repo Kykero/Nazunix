@@ -15,7 +15,6 @@
       den.aspects.desktop-files
       den.aspects.desktop-pdf
       den.aspects.desktop-gtk-theme
-      den.aspects.desktop-mail
       den.aspects.profile-comms
       den.aspects.desktop-obsidian
       den.aspects.desktop-onedrive

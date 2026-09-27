@@ -4,24 +4,7 @@
     includes = [
       den.aspects.profile-base
       den.aspects.profile-desktop
-
-      # coding agents from llm-agents (numtide cache); kept off the -base
-      # gateways so the bootstrap install never pulls them
-      den.aspects.home-claude-code
-      den.aspects.home-codex
-      den.aspects.home-herdr
-      den.aspects.home-omo
-      den.aspects.home-zoetrope
-      den.aspects.home-herdr-projects
-      den.aspects.home-collie
-
-      # Claude Code tooling: plugins, SuperClaude, MCP servers, rtk, graphify
-      den.aspects.home-claude-plugins
-      den.aspects.home-superclaude
-      den.aspects.home-claude-mcp-context7
-      den.aspects.home-claude-mcp-serena
-      den.aspects.home-rtk
-      den.aspects.home-graphify
+      den.aspects.profile-ai
     ];
   };
 }

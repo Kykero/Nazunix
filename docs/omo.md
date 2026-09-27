@@ -63,4 +63,4 @@ llm-agents packages omo-ai from its npm `beta` tag, so any `lock.yml` run
 that moves `llm-agents` can bring a new beta, and a new `claude-code`,
 which the wrapper uses.
 
-Remove: drop `home-omo` from `profiles/full.nix`, then delete `~/.omo`.
+Remove: drop `home-omo` from `profiles/ai.nix`, then delete `~/.omo`.

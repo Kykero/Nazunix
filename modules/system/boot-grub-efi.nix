@@ -13,7 +13,7 @@
         enable = true;
         efiSupport = true;
         device = "nodev"; # EFI only, no MBR install
-        useOSProber = false; # NixOS is alone on these machines
+        useOSProber = false; # other systems get an explicit entry (dazai: windows.nix)
         configurationLimit = 20; # keep the menu readable
       };
     };

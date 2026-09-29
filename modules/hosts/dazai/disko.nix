@@ -23,7 +23,9 @@
           };
 
           root = {
-            size = "100%";
+            # fixed, not 100%: the end of the disk is left to Windows 11
+            # (dual boot, windows.nix); 1G ESP + 131G = 132GiB end
+            size = "131G";
             content = {
               type = "btrfs";
               extraArgs = [

@@ -5,6 +5,7 @@
     includes = [
       den.aspects.desktop-niri
       den.aspects.desktop-niri-home
+      den.aspects.desktop-niri-xwayland
       den.aspects.desktop-niri-binds
       den.aspects.desktop-niri-window-rules
       den.aspects.desktop-niri-workspaces

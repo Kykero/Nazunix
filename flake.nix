@@ -44,6 +44,9 @@
       url = "github:AltanS/collie";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # nix-gaming: wine-tkg and friends. No follows: its cache only hits with
+    # its own pinned nixpkgs, and Wine is a long build.
+    nix-gaming.url = "github:fufexan/nix-gaming";
   };
 
   outputs =

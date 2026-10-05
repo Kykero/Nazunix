@@ -61,9 +61,11 @@
         hotkey-overlay.hidden = true;
       };
 
-      # volume keys for PipeWire & WirePlumber
+      # volume keys for PipeWire & WirePlumber. set-volume leaves the mute
+      # flag alone, so raising also unmutes (as GNOME and KDE do): otherwise
+      # the key moves a muted sink and seems dead.
       "XF86AudioRaiseVolume" = {
-        action.spawn-sh = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0";
+        action.spawn-sh = "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0";
         allow-when-locked = true;
       };
       "XF86AudioLowerVolume" = {

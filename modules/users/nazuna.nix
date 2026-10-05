@@ -10,6 +10,7 @@
       # from modules/homes/fish.nix. bash stays for scripts and recovery.
       den.aspects.home-bash
       den.aspects.home-btop
+      den.aspects.home-fastfetch
     ];
   };
 }

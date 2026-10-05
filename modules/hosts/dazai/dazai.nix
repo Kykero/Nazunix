@@ -9,6 +9,9 @@
   ];
 
   # both entities run on this machine
-  den.aspects.dazai.includes = [ den.aspects.dazai-hw ];
+  den.aspects.dazai.includes = [
+    den.aspects.dazai-hw
+    den.aspects.gaming._.steam # 8GB RAM: Steam only, no Wine/Prism
+  ];
   den.aspects.dazai-base.includes = [ den.aspects.dazai-hw ];
 }

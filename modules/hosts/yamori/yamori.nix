@@ -5,6 +5,9 @@
   # no zram here: 32GB RAM, kernel defaults are fine
   den.aspects.yamori-hw.includes = [ den.aspects.boot-grub-efi ];
 
-  den.aspects.yamori.includes = [ den.aspects.yamori-hw ];
+  den.aspects.yamori.includes = [
+    den.aspects.yamori-hw
+    den.aspects.gaming
+  ];
   den.aspects.yamori-base.includes = [ den.aspects.yamori-hw ];
 }

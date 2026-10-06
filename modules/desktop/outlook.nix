@@ -12,6 +12,11 @@
           --user-data-dir="''${XDG_DATA_HOME:-$HOME/.local/share}/outlook-webapp" \
           --app=https://outlook.office.com/mail/ "$@"
       '';
+      # the Outlook logo from Papirus, copied alone so the whole theme stays
+      # out of the runtime closure
+      icon = pkgs.runCommand "outlook-icon.svg" { } ''
+        cp ${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/ms-outlook.svg $out
+      '';
     in
     {
       home.packages = [ outlook ];
@@ -20,7 +25,7 @@
         name = "Outlook";
         genericName = "Mail";
         exec = "outlook";
-        icon = "internet-mail";
+        icon = "${icon}";
         categories = [
           "Network"
           "Email"

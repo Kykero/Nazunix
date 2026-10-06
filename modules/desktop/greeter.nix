@@ -16,7 +16,10 @@
     {
       services.displayManager.noctalia-greeter = {
         enable = true;
-        settings.keyboard.layout = "fr";
+        settings.keyboard = {
+          layout = "fr,us";
+          options = "grp:alt_shift_toggle";
+        };
         passwordlessSyncUsers = lib.mapAttrsToList (_: user: user.userName) host.users;
       };
     };

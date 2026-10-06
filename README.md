@@ -2,7 +2,7 @@
 
 Declarative NixOS for a small personal fleet (`yamori` desktop, `dazai`
 laptop, user `nazuna`), built on flake-parts, import-tree and the den
-framework. Desktop: niri + Noctalia, AZERTY; ghostty, fish and Zen Browser
+framework. Desktop: niri + Noctalia, AZERTY + US (Alt+Shift); ghostty, fish and Zen Browser
 for every user.
 
 The repo is the installer: `den-bootstrap` runs from a NixOS live USB, wipes

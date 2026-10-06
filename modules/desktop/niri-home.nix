@@ -3,7 +3,7 @@
 # ~/.config/niri/config.kdl and runs `niri validate` on it at build time,
 # against the package set here: nixpkgs' niri (v26.04), the same one the
 # session runs. Values mirror niri's resources/default-config.kdl for that
-# version, with the keyboard set to AZERTY; options are left out when the
+# version, with the keyboard set to AZERTY + US; options are left out when the
 # niri-flake default already equals the KDL default.
 #
 # A homeManager class on a host-included aspect is inert in den; the config
@@ -20,7 +20,9 @@
       programs.niri.settings = {
         input = {
           keyboard = {
-            xkb.layout = "fr";
+            # fr first (AZERTY binds assume it), us second; Alt+Shift switches
+            xkb.layout = "fr,us";
+            xkb.options = "grp:alt_shift_toggle";
             numlock = true;
             # faster than the 600 ms / 25 Hz default
             repeat-delay = 200;

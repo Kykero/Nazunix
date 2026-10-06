@@ -1,0 +1,258 @@
+# dazai's Noctalia config, written by den-noctalia-save (noctalia config export).
+# Seeds ~/.config/noctalia/config.toml on a fresh dazai; edit from the GUI instead.
+
+[bar.default]
+background_opacity = 0.4999999888241291
+capsule = false
+center = [ "clock-icon", "clock", "date-icon", "date" ]
+end = [ "status", "network", "audio_visualizer", "notifications", "volume", "battery", "session" ]
+font_scale = 0.99999998509883881
+font_weight = 600
+margin_edge = 0
+margin_ends = 0
+padding = 10
+position = "left"
+radius = 0
+shadow = true
+start = [ "control-center", "workspaces", "tray" ]
+thickness = 40
+widget_spacing = 10
+
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = [ "weather_main", "clock_main", "date_main" ]
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.clock_main]
+    box_height = 100.0
+    box_width = 260.0
+    cx = 1177.083251953125
+    cy = 645.83343505859375
+    output = "eDP-1"
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.clock_main.settings]
+        background = false
+        center_text = true
+        clock_style = "digital"
+        format = "{:%H:%M}"
+        shadow = true
+        timezone = "Europe/Paris"
+
+    [desktop_widgets.widget.date_main]
+    box_height = 34.0
+    box_width = 220.0
+    cx = 1177.083251953125
+    cy = 720.83343505859375
+    output = "eDP-1"
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.date_main.settings]
+        background = false
+        center_text = true
+        clock_style = "digital"
+        format = "{:%A, %d %B}"
+        shadow = true
+
+    [desktop_widgets.widget.weather_main]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 197.91667175292969
+    cy = 93.750007629394531
+    output = "eDP-1"
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "weather"
+
+        [desktop_widgets.widget.weather_main.settings]
+        background = false
+        shadow = true
+        show_forecast = false
+
+[dock]
+auto_hide = false
+background_opacity = 0.4999999888241291
+enabled = true
+icon_size = 40
+launcher_icon = "grid-dots"
+launcher_position = "end"
+magnification = false
+margin_edge = 8
+pinned = [ "zen-beta", "com.mitchellh.ghostty" ]
+position = "right"
+radius = 18
+reserve_space = false
+show_running = true
+smart_auto_hide = true
+
+[location]
+address = "Angers, France"
+auto_locate = false
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@eDP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 799.99993896484375
+    cy = 710.416748046875
+    output = "eDP-1"
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[plugins]
+enabled = [ "davemhammer/tailscale" ]
+
+[shell]
+lang = "fr"
+polkit_agent = true
+telemetry_enabled = true
+
+    [shell.greeter_sync]
+    auto_sync = true
+
+    [shell.panel]
+    launcher_placement = "attached"
+    transparency_mode = "glass"
+
+    [shell.screen_corners]
+    enabled = true
+    size = 20
+
+[theme]
+builtin = "Rosé Pine"
+community_palette = "Rose Pine Alt"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "faithful"
+
+    [theme.templates]
+    builtin_ids = [ "gtk4", "ghostty" ]
+
+[wallpaper]
+directory = "/home/nazuna/Nazunix/Wallpapers"
+
+    [wallpaper.default]
+    path = "/home/nazuna/Nazunix/Wallpapers/acrylic.jpg"
+
+    [wallpaper.last]
+    path = "/home/nazuna/Nazunix/Wallpapers/acrylic.jpg"
+
+    [wallpaper.monitors.eDP-1]
+    path = "/home/nazuna/Nazunix/Wallpapers/acrylic.jpg"
+
+[weather]
+enabled = true
+unit = "metric"
+
+[widget.audio_visualizer]
+bands = 12
+centered = true
+mirrored = true
+show_when_idle = false
+width = 60
+
+[widget.clock]
+format = "{:%H:%M}"
+timezone = "Europe/Paris"
+tooltip_format = "{:%A, %d %B %Y}"
+vertical_format = """{:%H
+%M}"""
+
+[widget.clock-icon]
+glyph = "clock"
+type = "custom_button"
+
+    [widget.clock-icon.actions]
+    left = "panel-toggle control-center calendar"
+
+[widget.control-center]
+glyph = "noctalia"
+
+[widget.date]
+format = "{:%d/%m}"
+tooltip_format = "{:%A, %d %B %Y}"
+type = "clock"
+vertical_format = """{:%d
+%m}"""
+
+[widget.date-icon]
+glyph = "calendar"
+type = "custom_button"
+
+    [widget.date-icon.actions]
+    left = "panel-toggle control-center calendar"
+
+[widget.media]
+hide_when_no_media = true
+
+[widget.network]
+show_label = false
+
+[widget.notifications]
+hide_when_no_unread = false
+
+[widget.session]
+glyph = "shutdown"
+
+[widget.status]
+type = "davemhammer/tailscale:status"
+
+[widget.tray]
+drawer = true
+hide_passive = true
+
+[widget.volume]
+show_label = false
+
+[widget.weather]
+show_temperature = true
+
+[widget.workspaces]
+active_pill_size = 2.6000000000000001
+empty_color = "outline"
+focused_color = "primary"
+hide_when_empty = false
+inactive_pill_size = 1.0
+occupied_color = "on_surface_variant"
+pill_scale = 0.59999999999999998
+show_labels = false
+style = "regular"

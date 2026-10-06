@@ -6,6 +6,7 @@
     den.aspects.boot-grub-efi
     den.aspects.zram
     den.aspects.laptop-power
+    den.aspects.windows-dualboot
   ];
 
   # both entities run on this machine

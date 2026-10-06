@@ -13,7 +13,7 @@
         enable = true;
         efiSupport = true;
         device = "nodev"; # EFI only, no MBR install
-        useOSProber = false; # other systems get an explicit entry (dazai: windows.nix)
+        useOSProber = false; # other systems get an explicit entry (windows-dualboot.nix)
         configurationLimit = 20; # keep the menu readable
       };
     };

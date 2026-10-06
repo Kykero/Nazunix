@@ -77,8 +77,8 @@ automatically. It ends with `passwd <user>` and never reboots by itself.
 ## 4. First boot
 
 Remove the stick, reboot. The Noctalia greeter shows up; the session is
-"Niri". Noctalia starts from `modules/desktop/noctalia/config.toml`;
-changes made in its GUI override it per machine.
+"Niri". Noctalia starts from `modules/desktop/noctalia/<host>.toml`, or
+`base.toml` for a new machine; tune it from its GUI, `den-rebuild` saves it.
 
 If the ISO could not push (no `git.env`), the checkout with the generated
 host files is in `~/Nazunix`, staged:

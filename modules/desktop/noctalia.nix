@@ -1,21 +1,33 @@
 # Noctalia shell (bar, launcher, notifications, lock screen) on top of niri.
-# noctalia/config.toml is the declarative base layer, linked read-only into
-# ~/.config/noctalia; the GUI still owns ~/.local/state/noctalia/settings.toml,
-# which overrides it.
+# ~/.config/noctalia/config.toml is seeded once, writable, from
+# noctalia/<host>.toml (the machine's last snapshot, see
+# apps/noctalia-save.nix) or noctalia/base.toml, then left alone: each
+# machine tunes its own (bar size, widget placement), from the GUI or by hand.
 # pkgs.noctalia (v5) comes from nixpkgs, so cache.nixos.org has it -- no
 # extra flake input, no extra substituter. pkgs.noctalia-shell is the dead v4.
 { ... }:
 {
   den.aspects.desktop-noctalia.provides.to-users.homeManager =
-    { pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       home.packages = [ pkgs.noctalia ];
 
-      xdg.configFile."noctalia/config.toml" = {
-        source = ./noctalia/config.toml;
-        # replaces the hand-written copy predating this module
-        force = true;
-      };
+      # a symlink is a leftover from when home-manager owned the file
+      home.activation.noctaliaConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        cfg="${config.xdg.configHome}/noctalia/config.toml"
+        if [ ! -e "$cfg" ] || [ -L "$cfg" ]; then
+          seed="${./noctalia}/$(cat /proc/sys/kernel/hostname).toml"
+          [ -e "$seed" ] || seed="${./noctalia}/base.toml"
+          run mkdir -p "$(dirname "$cfg")"
+          run rm -f "$cfg"
+          run install -m 644 "$seed" "$cfg"
+        fi
+      '';
 
       programs.niri.settings = {
         # upstream's recommended niri autostart

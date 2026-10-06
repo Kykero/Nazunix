@@ -1,8 +1,8 @@
-# Noctalia v5 base layer, deployed read-only by modules/desktop/noctalia.nix.
-# GUI changes land in ~/.local/state/noctalia/settings.toml and win over this
-# file; fold them back here with `noctalia config export`.
-# No `output` on desktop widgets: empty = primary output, so the same file
-# works on every host (cx/cy were placed on a 1600x900 layout).
+# Noctalia v5 seed for a machine without its own noctalia/<host>.toml.
+# Copied once into ~/.config/noctalia/config.toml (writable), then tuned per
+# machine; den-rebuild snapshots the result back as noctalia/<host>.toml.
+# No `output` on desktop widgets: empty = primary output, so the seed works
+# on any host (cx/cy were placed on a 1600x900 layout).
 
 [bar.default]
 background_opacity = 0.5

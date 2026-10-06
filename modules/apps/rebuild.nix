@@ -1,18 +1,20 @@
-# den-rebuild: day-2 helper for an already-installed machine. Pulls
-# main and hands off to nh; refuses to run over local changes so a
-# fast-forward merge is always safe. The caches declared in the flake
+# den-rebuild: day-2 helper for an already-installed machine. Snapshots
+# the Noctalia config (den-noctalia-save), rebases onto main, pushes the
+# snapshot and hands off to nh; refuses to run over local changes so only
+# its own snapshot commits ever get rebased. The caches declared in the flake
 # are passed to the build, so a cache added in the new config (numtide
 # for llm-agents) already serves the switch that activates it.
 { ... }:
 {
   perSystem =
-    { pkgs, ... }:
+    { pkgs, self', ... }:
     {
       packages.den-rebuild = pkgs.writeShellApplication {
         name = "den-rebuild";
         runtimeInputs = [
           pkgs.nh
           pkgs.git
+          self'.packages.den-noctalia-save
         ];
         text = ''
           # NH_FLAKE comes from programs.nh.flake (modules/nh.nix); NH_OS_FLAKE
@@ -25,8 +27,14 @@
             exit 1
           fi
 
+          den-noctalia-save
+
           git fetch origin
-          git merge --ff-only origin/main
+          git rebase -q origin/main
+          if [ -n "$(git log origin/main..HEAD)" ]; then
+            git push -q origin HEAD:main \
+              || echo "warning: snapshot not pushed -- push it by hand" >&2
+          fi
           # the running /etc/nix/nix.conf only knows the caches of the current
           # generation; read the new ones from the flake. @wheel is trusted
           # (nix/settings.nix), so these --option flags are honoured.

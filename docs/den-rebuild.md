@@ -20,10 +20,16 @@ It is a flake package, not a command on `PATH`: always go through
 2. **Refuses local changes.** If `git status --porcelain` prints anything,
    it stops with `error: local changes present -- commit or stash first`.
    This guarantees the next step can never overwrite uncommitted work.
-3. **Fast-forwards to `origin/main`.** `git fetch origin` then
-   `git merge --ff-only origin/main`. No merge commit is ever created; if
-   the local branch has diverged, the merge fails and nothing is switched.
-4. **Switches.** `exec nh os switch`, which builds the configuration of the
+3. **Snapshots Noctalia.** `den-noctalia-save` (`modules/apps/noctalia-save.nix`)
+   writes `noctalia config export` to
+   `modules/desktop/noctalia/<host>.toml` and commits it if it changed.
+   That file seeds `~/.config/noctalia/config.toml` after a reinstall.
+4. **Rebases onto `origin/main` and pushes.** `git fetch origin`,
+   `git rebase origin/main`, then `git push origin HEAD:main` when a
+   snapshot commit is ahead. Only snapshot commits can be local here (step
+   2), and each touches its own host file, so the rebase does not conflict.
+   A failed push only warns; the switch goes on.
+5. **Switches.** `exec nh os switch`, which builds the configuration of the
    current host, shows the package diff, and activates it.
 
 ## Arguments
@@ -48,7 +54,8 @@ picks them up. It does not wait for CI: run it only after `check` passed.
 | Message | Cause | Fix |
 |---|---|---|
 | `local changes present` | uncommitted edits in `~/Nazunix` | commit and push them, or `git stash` |
-| `Not possible to fast-forward` | local commits not on `origin/main` | push them, or `git reset --hard origin/main` if they are disposable |
+| rebase conflict | a local commit clashes with `origin/main` | `git rebase --abort`, sort the commit out by hand |
+| `snapshot not pushed` | no push access (SSH key, network) | `git push` later; the next run retries |
 | `NH_FLAKE: set by programs.nh` | nh not enabled on this system | run from a system built with the `nix-nh` aspect, or set `NH_FLAKE` |
 | build error | the configuration does not build | check the `check` run for that commit |
 

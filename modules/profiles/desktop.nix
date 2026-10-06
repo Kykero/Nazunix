@@ -19,6 +19,7 @@
       den.aspects.profile-comms
       den.aspects.desktop-obsidian
       den.aspects.desktop-onedrive
+      den.aspects.desktop-localsend
       den.aspects.desktop-audio
       den.aspects.desktop-power
       den.aspects.desktop-bluetooth

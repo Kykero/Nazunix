@@ -1,6 +1,7 @@
 # Noctalia shell (bar, launcher, notifications, lock screen) on top of niri.
-# Deliberately no declarative settings: nothing is written to
-# ~/.config/noctalia, the GUI owns ~/.local/state/noctalia/settings.toml.
+# noctalia/config.toml is the declarative base layer, linked read-only into
+# ~/.config/noctalia; the GUI still owns ~/.local/state/noctalia/settings.toml,
+# which overrides it.
 # pkgs.noctalia (v5) comes from nixpkgs, so cache.nixos.org has it -- no
 # extra flake input, no extra substituter. pkgs.noctalia-shell is the dead v4.
 { ... }:
@@ -9,6 +10,12 @@
     { pkgs, ... }:
     {
       home.packages = [ pkgs.noctalia ];
+
+      xdg.configFile."noctalia/config.toml" = {
+        source = ./noctalia/config.toml;
+        # replaces the hand-written copy predating this module
+        force = true;
+      };
 
       programs.niri.settings = {
         # upstream's recommended niri autostart

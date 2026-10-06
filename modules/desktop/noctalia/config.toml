@@ -1,0 +1,219 @@
+# Noctalia v5 base layer, deployed read-only by modules/desktop/noctalia.nix.
+# GUI changes land in ~/.local/state/noctalia/settings.toml and win over this
+# file; fold them back here with `noctalia config export`.
+# No `output` on desktop widgets: empty = primary output, so the same file
+# works on every host (cx/cy were placed on a 1600x900 layout).
+
+[bar.default]
+background_opacity = 0.5
+capsule = false
+center = [ "clock-icon", "clock", "date-icon", "date" ]
+end = [ "status", "network", "audio_visualizer", "notifications", "volume", "battery", "session" ]
+font_scale = 1.0
+font_weight = 600
+margin_edge = 0
+margin_ends = 0
+padding = 10
+position = "left"
+radius = 0
+shadow = true
+start = [ "control-center", "workspaces", "tray" ]
+thickness = 40
+widget_spacing = 10
+
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = [ "weather_main", "clock_main", "date_main" ]
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.clock_main]
+    box_height = 100.0
+    box_width = 260.0
+    cx = 1177.0
+    cy = 646.0
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.clock_main.settings]
+        background = false
+        center_text = true
+        clock_style = "digital"
+        format = "{:%H:%M}"
+        shadow = true
+        timezone = "Europe/Paris"
+
+    [desktop_widgets.widget.date_main]
+    box_height = 34.0
+    box_width = 220.0
+    cx = 1177.0
+    cy = 721.0
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.date_main.settings]
+        background = false
+        center_text = true
+        clock_style = "digital"
+        format = "{:%A, %d %B}"
+        shadow = true
+
+    [desktop_widgets.widget.weather_main]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 198.0
+    cy = 94.0
+    placement_height = 900.0
+    placement_width = 1600.0
+    rotation = 0.0
+    type = "weather"
+
+        [desktop_widgets.widget.weather_main.settings]
+        background = false
+        shadow = true
+        show_forecast = false
+
+[dock]
+auto_hide = false
+background_opacity = 0.5
+enabled = true
+icon_size = 40
+launcher_icon = "grid-dots"
+launcher_position = "end"
+magnification = false
+margin_edge = 8
+pinned = [ "zen-beta", "com.mitchellh.ghostty" ]
+position = "right"
+radius = 18
+reserve_space = false
+show_running = true
+smart_auto_hide = true
+
+[location]
+address = "Angers, France"
+auto_locate = false
+
+[lockscreen_widgets]
+enabled = false
+
+[plugins]
+enabled = [ "davemhammer/tailscale" ]
+
+[shell]
+lang = "fr"
+polkit_agent = true
+telemetry_enabled = true
+
+    [shell.greeter_sync]
+    auto_sync = true
+
+    [shell.panel]
+    launcher_placement = "attached"
+    transparency_mode = "glass"
+
+    [shell.screen_corners]
+    enabled = true
+    size = 20
+
+[theme]
+builtin = "Rosé Pine"
+community_palette = "Rose Pine Alt"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "faithful"
+
+    [theme.templates]
+    builtin_ids = [ "gtk4", "ghostty" ]
+
+# the flake checkout lives at ~/Nazunix on every host (see modules/nh.nix)
+[wallpaper]
+directory = "/home/nazuna/Nazunix/Wallpapers"
+
+    [wallpaper.default]
+    path = "/home/nazuna/Nazunix/Wallpapers/acrylic.jpg"
+
+[weather]
+enabled = true
+unit = "metric"
+
+[widget.audio_visualizer]
+bands = 12
+centered = true
+mirrored = true
+show_when_idle = false
+width = 60
+
+[widget.clock]
+format = "{:%H:%M}"
+timezone = "Europe/Paris"
+tooltip_format = "{:%A, %d %B %Y}"
+vertical_format = """{:%H
+%M}"""
+
+[widget.clock-icon]
+glyph = "clock"
+type = "custom_button"
+
+    [widget.clock-icon.actions]
+    left = "panel-toggle control-center calendar"
+
+[widget.control-center]
+glyph = "noctalia"
+
+[widget.date]
+format = "{:%d/%m}"
+tooltip_format = "{:%A, %d %B %Y}"
+type = "clock"
+vertical_format = """{:%d
+%m}"""
+
+[widget.date-icon]
+glyph = "calendar"
+type = "custom_button"
+
+    [widget.date-icon.actions]
+    left = "panel-toggle control-center calendar"
+
+[widget.media]
+hide_when_no_media = true
+
+[widget.network]
+show_label = false
+
+[widget.notifications]
+hide_when_no_unread = false
+
+[widget.session]
+glyph = "shutdown"
+
+[widget.status]
+type = "davemhammer/tailscale:status"
+
+[widget.tray]
+drawer = true
+hide_passive = true
+
+[widget.volume]
+show_label = false
+
+[widget.weather]
+show_temperature = true
+
+[widget.workspaces]
+active_pill_size = 2.6
+empty_color = "outline"
+focused_color = "primary"
+hide_when_empty = false
+inactive_pill_size = 1.0
+occupied_color = "on_surface_variant"
+pill_scale = 0.6
+show_labels = false
+style = "regular"

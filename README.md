@@ -28,7 +28,8 @@ runs only the first block.
 - niri from nixpkgs, AZERTY binds, window rules, two named workspaces,
   background blur
 - Noctalia v5: bar, launcher, notifications, lock screen, and its greetd
-  greeter as the login screen
+  greeter as the login screen; base config from
+  `modules/desktop/noctalia/config.toml`
 - PipeWire, BlueZ, UPower + power-profiles-daemon
 - Ghostty (terminal), Zen Browser, Nautilus (+ gvfs), Zathura (PDF),
   JetBrains Mono Nerd Font, GTK apps themed from Noctalia (adw-gtk3)
@@ -54,9 +55,9 @@ runs only the first block.
 - sign-ins: `sudo tailscale up`, OneDrive (Microsoft window on first
   mount), `gh auth login`, `glab auth login`, `claude` then `/login`,
   `codex login`, OmO, Aerion accounts, Teams, WhatsApp
-- Noctalia settings from its GUI, including the GTK and Ghostty
-  templates; `modules/desktop/noctalia/` holds a JSON snapshot of the
-  config and enabled plugins for reference, not applied
+- Noctalia plugins: the config enables the tailscale plugin, install it
+  from the GUI if it is not fetched; GUI tweaks override the declarative config,
+  fold them back with `noctalia config export`
 - herdr integrations and plugins, Collie (`collie start`,
   `~/.config/collie/.env`), see [herdr.md](docs/herdr.md)
 

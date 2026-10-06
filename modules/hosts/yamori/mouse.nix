@@ -7,7 +7,7 @@
   den.aspects.yamori.provides.to-users.homeManager = {
     programs.niri.settings.input.mouse = {
       accel-profile = "flat";
-      accel-speed = -0.5;
+      accel-speed = -0.2;
     };
   };
 }

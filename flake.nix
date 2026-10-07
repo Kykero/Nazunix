@@ -29,9 +29,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-    # Vimzuna: the Neovim config (nvf + den), exported as packages
-    vimzuna = {
-      url = "github:Kykero/Vimzuna";
+    # nvf: Neovim configured through Nix modules; the editor itself lives in
+    # modules/neovim/ as den aspects of a `vim` class
+    nvf = {
+      url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # agent runtimes (claude-code, codex, herdr), refreshed daily by numtide.

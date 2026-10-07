@@ -3,21 +3,26 @@
 #
 # niri matches a bind against the *unshifted* keysym of the pressed key, so a
 # bind has to name what the key produces without Shift on the fr layout, never
-# the character printed on a US keyboard. Everything that is a letter or a
-# named key (arrows, Home, Print, XF86*) is unchanged. What moves:
+# the character printed on a US keyboard. Exception: when that keysym is not
+# ASCII (é è ç ^), niri takes the key's keysym from the first other layout
+# where it is ASCII, here "us" (niri-home.nix: "fr,us"), so those keys are
+# bound by their US name. Everything that is a letter or a named key (arrows,
+# Home, Print, XF86*) is unchanged. What moves:
 #
 #   QWERTY default        AZERTY here            why
-#   Mod+1 .. Mod+9        ampersand eacute quotedbl apostrophe parenleft
-#                         minus egrave underscore ccedilla
-#                                                unshifted number row on fr
+#   Mod+1 .. Mod+9        ampersand 2 quotedbl apostrophe parenleft
+#                         minus 7 underscore 9
+#                                                unshifted number row on fr,
+#                                                é è ç resolved through us
 #   Mod+Shift+Slash       Mod+Shift+colon        "/" is Shift+":" on fr
 #   Mod+Period            Mod+semicolon          the key printed ";" / "."
 #   Mod+Minus / Mod+Equal Mod+parenright / Mod+Equal
 #                                                same physical keys ()°  =+);
 #                                                "minus" is the "6" key on fr
-#   Mod+BracketLeft/Right Mod+dead_circumflex / Mod+dollar
+#   Mod+BracketLeft/Right Mod+BracketLeft / Mod+dollar
 #                                                same physical keys ^¨  $£;
-#                                                [ ] need AltGr on fr
+#                                                ^ resolves through us, $ is
+#                                                ASCII on fr
 #
 # Programs: ghostty (terminal.nix); launcher and lock go through Noctalia's
 # IPC instead of fuzzel/swaylock.
@@ -209,26 +214,26 @@
       # (niri-workspaces.nix) are reached from any monitor, e.g. from yamori's
       # second screen, which holds a single workspace.
       "Mod+ampersand".action.focus-workspace = "1";
-      "Mod+eacute".action.focus-workspace = "2";
+      "Mod+2".action.focus-workspace = "2";
       "Mod+quotedbl".action.focus-workspace = 3;
       "Mod+apostrophe".action.focus-workspace = 4;
       "Mod+parenleft".action.focus-workspace = 5;
       "Mod+minus".action.focus-workspace = 6;
-      "Mod+egrave".action.focus-workspace = 7;
+      "Mod+7".action.focus-workspace = 7;
       "Mod+underscore".action.focus-workspace = 8;
-      "Mod+ccedilla".action.focus-workspace = 9;
+      "Mod+9".action.focus-workspace = 9;
       "Mod+Ctrl+ampersand".action.move-column-to-workspace = "1";
-      "Mod+Ctrl+eacute".action.move-column-to-workspace = "2";
+      "Mod+Ctrl+2".action.move-column-to-workspace = "2";
       "Mod+Ctrl+quotedbl".action.move-column-to-workspace = 3;
       "Mod+Ctrl+apostrophe".action.move-column-to-workspace = 4;
       "Mod+Ctrl+parenleft".action.move-column-to-workspace = 5;
       "Mod+Ctrl+minus".action.move-column-to-workspace = 6;
-      "Mod+Ctrl+egrave".action.move-column-to-workspace = 7;
+      "Mod+Ctrl+7".action.move-column-to-workspace = 7;
       "Mod+Ctrl+underscore".action.move-column-to-workspace = 8;
-      "Mod+Ctrl+ccedilla".action.move-column-to-workspace = 9;
+      "Mod+Ctrl+9".action.move-column-to-workspace = 9;
 
       # move the focused window in and out of a column (QWERTY: Mod+[ and Mod+])
-      "Mod+dead_circumflex".action.consume-or-expel-window-left = [ ];
+      "Mod+BracketLeft".action.consume-or-expel-window-left = [ ];
       "Mod+dollar".action.consume-or-expel-window-right = [ ];
 
       # consume one window from the right into the column / expel the bottom one

@@ -15,7 +15,7 @@
       set -g status-style "bg=default,fg=brightblack"
       set -g status-left "#[fg=blue,bold] #S "
       set -g status-left-length 30
-      set -g status-right "#{?client_prefix,#[fg=yellow,bold]PREFIX ,}#[fg=brightblack]%H:%M "
+      set -g status-right "#{?client_prefix,#[fg=yellow]#[bold]PREFIX ,}#[fg=brightblack]%H:%M "
       set -g window-status-format " #I:#W "
       set -g window-status-current-format "#[fg=magenta,bold] #I:#W "
       set -g window-status-separator ""

@@ -204,9 +204,12 @@
       "Mod+Ctrl+Shift+WheelScrollDown".action.move-column-right = [ ];
       "Mod+Ctrl+Shift+WheelScrollUp".action.move-column-left = [ ];
 
-      # workspaces by index: the unshifted AZERTY number row
-      "Mod+ampersand".action.focus-workspace = 1;
-      "Mod+eacute".action.focus-workspace = 2;
+      # workspaces on the unshifted AZERTY number row. An index counts on the
+      # focused monitor only, so 1 and 2 go by name: the named workspaces
+      # (niri-workspaces.nix) are reached from any monitor, e.g. from yamori's
+      # second screen, which holds a single workspace.
+      "Mod+ampersand".action.focus-workspace = "1";
+      "Mod+eacute".action.focus-workspace = "2";
       "Mod+quotedbl".action.focus-workspace = 3;
       "Mod+apostrophe".action.focus-workspace = 4;
       "Mod+parenleft".action.focus-workspace = 5;
@@ -214,8 +217,8 @@
       "Mod+egrave".action.focus-workspace = 7;
       "Mod+underscore".action.focus-workspace = 8;
       "Mod+ccedilla".action.focus-workspace = 9;
-      "Mod+Ctrl+ampersand".action.move-column-to-workspace = 1;
-      "Mod+Ctrl+eacute".action.move-column-to-workspace = 2;
+      "Mod+Ctrl+ampersand".action.move-column-to-workspace = "1";
+      "Mod+Ctrl+eacute".action.move-column-to-workspace = "2";
       "Mod+Ctrl+quotedbl".action.move-column-to-workspace = 3;
       "Mod+Ctrl+apostrophe".action.move-column-to-workspace = 4;
       "Mod+Ctrl+parenleft".action.move-column-to-workspace = 5;

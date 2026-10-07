@@ -13,6 +13,13 @@
       den.aspects.shell-git
       den.aspects.shell-gh
       den.aspects.shell-glab
+
+      # terminal tools, also driven from Neovim (modules/neovim/)
+      den.aspects.home-yazi
+      den.aspects.home-television
+      den.aspects.home-lazygit
+      den.aspects.home-bat
+      den.aspects.home-search
     ];
 
     nixos =

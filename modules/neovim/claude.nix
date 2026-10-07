@@ -2,9 +2,9 @@
 # MCP WebSocket protocol. The `claude` CLI itself is NOT provided here:
 # it comes with the full profile (modules/homes/claude-code.nix).
 #
-# Claude runs in a zellij pane via the "external" terminal provider:
+# Claude runs in a tmux pane via the "external" terminal provider:
 # the MCP server lives in Neovim, the CLI connects back through
-# ~/.claude/ide lock files. Outside zellij, the native terminal
+# ~/.claude/ide lock files. Outside tmux, the native terminal
 # provider is used as a fallback.
 { ... }:
 {
@@ -15,12 +15,12 @@
         package = pkgs.vimPlugins.claudecode-nvim;
         setup = ''
           local terminal
-          if vim.env.ZELLIJ then
+          if vim.env.TMUX then
             terminal = {
               provider = "external",
               provider_opts = {
-                -- new pane on the right, closed when claude exits
-                external_terminal_cmd = "zellij run -c -d right -- %s",
+                -- new pane on the right, in Neovim's cwd, closed when claude exits
+                external_terminal_cmd = "tmux split-window -h -c '#{pane_current_path}' %s",
               },
             }
           else

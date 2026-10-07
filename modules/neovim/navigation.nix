@@ -1,8 +1,8 @@
 # smart-splits.nvim — seamless navigation between Neovim splits and
-# zellij panes.
+# tmux panes.
 #
-# The zellij side of the contract is modules/homes/zellij.nix:
-# vim-zellij-navigator plugin bound to Ctrl+hjkl / Alt+hjkl.
+# The tmux side of the contract is modules/homes/tmux.nix: Ctrl+hjkl /
+# Alt+hjkl, passed through to Neovim when @pane-is-vim is set.
 { ... }:
 {
   vimzuna.navigation.vim =

@@ -14,6 +14,7 @@
       den.aspects.home-herdr
       den.aspects.home-herdr-integrations
       den.aspects.home-omo
+      den.aspects.home-omo-graph
       den.aspects.home-zoetrope
       den.aspects.home-collie
       den.aspects.home-clauth

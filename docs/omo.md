@@ -11,6 +11,7 @@ What Nix provides, and what stays imperative:
 | | Nix (repo) | By hand, once per machine |
 |---|---|---|
 | omo | binary (`homes/omo.nix`) | sign-ins, default model |
+| omo-graph | script (`homes/omo-graph.nix`) | nothing |
 | config | nothing | `~/.omo/omo.jsonc` if ever needed |
 
 ## Sign in
@@ -56,6 +57,30 @@ project-local settings or skills.
 
 The package wrapper sets `OMO_SEND_ANONYMOUS_TELEMETRY=0`, which turns off
 OmO's PostHog usage telemetry.
+
+## Session graph
+
+With the `anthropic-subscription` provider, omo runs real Claude Code
+processes: its main Claude and short-lived helpers (a Haiku scout, say).
+They start with `--setting-sources=`, so none of the user settings apply,
+herdr's hooks included. herdr sees a `claude` process in the omo pane
+but never its session id, its state stays `idle`, and zoetrope's
+`prefix+shift+z` has nothing to open there.
+
+The transcripts are ordinary Claude Code sessions in `~/.claude/projects/`,
+and the session id is on each child's command line. In a split beside
+the omo pane:
+
+```bash
+omo-graph            # follow omo's main Claude (the oldest live child)
+omo-graph -l         # list the live children: number, session id, model
+omo-graph -n 2       # follow another one from the list
+omo-graph -p w3:p1   # only the omo in that herdr pane (`herdr agent list`)
+```
+
+The graph follows the session live. omo's own turns (its pi-format
+sessions in `~/.omo/agent/sessions/`) and a ChatGPT-provider run have no
+graph: zoetrope reads only Claude Code and Codex transcripts.
 
 ## Updates
 

@@ -12,6 +12,7 @@
 
       # multiplexers and what hangs off herdr
       den.aspects.home-herdr
+      den.aspects.home-herdr-integrations
       den.aspects.home-omo
       den.aspects.home-zoetrope
       den.aspects.home-herdr-projects

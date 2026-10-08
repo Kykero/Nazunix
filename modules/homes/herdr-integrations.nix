@@ -5,6 +5,10 @@
 # and writes only on change, so it simply runs on every switch, for each
 # agent whose folder exists. ~/.claude/settings.json stays a merged file
 # (claude-plugins.nix).
+#
+# The hook scripts are `sh` handing over to `python3` from PATH; without it
+# every hook fails quietly and herdr never sees a state change or a session
+# id, so python3 is on PATH here.
 { inputs, ... }:
 {
   den.aspects.home-herdr-integrations.provides.to-users.homeManager =
@@ -19,6 +23,8 @@
       home = config.home.homeDirectory;
     in
     {
+      home.packages = [ pkgs.python3 ];
+
       home.activation.herdrIntegrations = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         [ -d "${home}/.claude" ] && run ${herdr} integration install claude >/dev/null
         [ -d "${home}/.codex" ] && run ${herdr} integration install codex >/dev/null

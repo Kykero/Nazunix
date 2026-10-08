@@ -3,9 +3,9 @@
 [OmO](https://omo.dev) (`omo`, package `omo-ai` from llm-agents) is a
 terminal coding agent: the OMO plugin running on the senpi engine, a fork
 of pi. It is on trial next to herdr, in the `full` profile only. herdr
-stays for `claude` and `codex`: omo shows one session per TUI, and herdr
-does not recognize omo's own process, so an omo pane gets no
-working/blocked state of its own.
+stays for `claude` and `codex`: omo shows one session per TUI. In herdr,
+an omo pane shows as `pi` with its real state (working, done, blocked),
+reported by omo itself (see "Session graph" for how).
 
 What Nix provides, and what stays imperative:
 
@@ -71,11 +71,16 @@ threads, bring them back on request) is global, in
 
 With the `anthropic-subscription` provider, omo runs real Claude Code
 processes: its main Claude and short-lived helpers (a Haiku scout, say).
-They start with `--setting-sources=`, so none of the user settings apply,
-herdr's session hook included. herdr sees a `claude` process in the omo
-pane (so it labels the pane `claude`, `idle`: omo's UI does not match the
-Claude Code screen rules) but never learns a session id, and zoetrope's
-`prefix+shift+z` has nothing to open there.
+`homes/omo.nix` runs them as `omo-claude` (the same claude-code, under
+another name). As `claude`, herdr would spot them in the pane, contradict
+omo's own `pi` report and show an idle `claude` instead.
+
+omo's report carries no session herdr keeps (herdr only keeps one from its
+own integrations, and omo reports as `custom:senpi`), and its Claude
+children start with `--setting-sources=`, so none of the user settings
+apply, herdr's session hook included. zoetrope's `prefix+shift+z` has
+nothing to open in an omo pane, and herdr-projects cannot resume an omo
+coordinator.
 
 The transcripts are ordinary Claude Code sessions in `~/.claude/projects/`,
 and the session id is on each child's command line (`--session-id`, or

@@ -41,6 +41,12 @@
       };
 
       mini.icons.enable = true;
+
+      # wl-copy/wl-paste for the "+ and "* registers (Wayland)
+      clipboard = {
+        enable = true;
+        providers.wl-copy.enable = true;
+      };
     };
 
   };

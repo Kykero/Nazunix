@@ -44,28 +44,41 @@ sessions() {
 
     labels=$(herdr pane list 2>/dev/null | jq -r '
       .result.panes[]? | [.pane_id, (.display_agent // .terminal_title_stripped // "")] | @tsv')
-    for d in /proc/[0-9]*; do
-      cmd=$(tr '\0' ' ' 2>/dev/null < "$d/cmdline") || continue
-      case "$cmd" in
-        "claude "*"--setting-sources= "*) ;;
-        *) continue ;;
-      esac
+    # only processes with a bare --setting-sources= argument: one grep over
+    # every cmdline instead of a read per process
+    while IFS= read -r f; do
+      d=${f%/cmdline}
+      cmd=$(tr '\0' ' ' 2>/dev/null < "$f") || continue
+      read -ra args <<< "$cmd"
+      [ "${args[0]:-}" = claude ] || continue
       sid=""
+      fork=false
       model="claude"
       prev=""
-      read -ra args <<< "$cmd"
       for a in "${args[@]}"; do
         case "$a" in
           --session-id=*) sid=${a#--session-id=} ;;
+          --resume=*) sid=${a#--resume=} ;;
+          --fork-session) fork=true ;;
         esac
         [ "$prev" = "--model" ] && model=$a
+        [ "$prev" = "--resume" ] && sid=$a
         prev=$a
       done
-      [ -n "$sid" ] || continue
+      # a fork writes a new session under an id it picks itself: take the
+      # newest transcript of the process's project folder
+      if $fork || [ -z "$sid" ]; then
+        cwd=$(readlink "$d/cwd" 2>/dev/null) || continue
+        proj="$claude_dir/$(printf '%s' "$cwd" | sed 's/[^A-Za-z0-9]/-/g')"
+        newest=$(find "$proj" -maxdepth 1 -name '*.jsonl' -printf '%T@ %p\n' 2>/dev/null \
+          | sort -nr | head -n1 | cut -d' ' -f2-) || true
+        [ -n "$newest" ] || continue
+        sid=$(basename "$newest" .jsonl)
+      fi
       pane=$(tr '\0' '\n' 2>/dev/null < "$d/environ" | sed -n 's/^HERDR_PANE_ID=//p')
       where=$(printf '%s\n' "$labels" | awk -F'\t' -v p="$pane" '$1 == p { print $2 }')
       printf 'claude\t%s\tomo %s · %s  (%s)\n' "$sid" "$model" "${where:-?}" "${pane:-?}"
-    done
+    done < <(grep -lsxzF -- '--setting-sources=' /proc/[0-9]*/cmdline || true)
   } | while IFS=$'\t' read -r kind id label; do
     f=$(transcript "$kind" "$id")
     [ -n "$f" ] || continue
@@ -83,10 +96,19 @@ age() {
 show_list() {
   local n=0
   while IFS=$'\t' read -r t kind _ label _; do
+    [ -n "$t" ] || continue
     n=$(( n + 1 ))
     printf '%3d  %-6s %5s  %s\n' "$n" "$kind" "$(age "$t")" "$label"
   done <<< "$1"
   [ "$n" -gt 0 ] || echo "  no live claude or codex session in herdr yet"
+}
+
+# zoe restores the terminal only when it exits on its own; one killed by a
+# signal leaves raw mode, the alternate screen and mouse capture behind
+tty_saved=$(stty -g 2>/dev/null || true)
+restore_tty() {
+  [ -n "$tty_saved" ] && stty "$tty_saved" 2>/dev/null
+  printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1049l'
 }
 
 # follow the newest session; when one appears that was not there before,
@@ -108,6 +130,7 @@ auto_follow() {
     fi
     zoe "$(printf '%s\n' "$cur" | cut -f5)" --follow &
     pid=$!
+    trap 'kill "$pid" 2>/dev/null; restore_tty' EXIT
     while kill -0 "$pid" 2>/dev/null; do
       sleep 2
       rows=$(sessions)
@@ -119,10 +142,12 @@ auto_follow() {
         cur=$new
         kill "$pid" 2>/dev/null || true
         wait "$pid" 2>/dev/null || true
+        restore_tty
         continue 2
       fi
     done
     wait "$pid" 2>/dev/null || true
+    trap - EXIT
     return
   done
 }
@@ -151,7 +176,14 @@ while :; do
   echo
   printf 'number = open its graph (q in the graph comes back here), a = auto-follow, q = quit > '
   choice=""
-  read -r -t 3 choice || continue
+  # refresh every 3 s until a key is pressed; the list then holds still
+  # until Enter, so the number typed is the line on screen
+  read -r -s -n1 -t 3 choice || continue
+  if [ -n "$choice" ]; then
+    printf '%s' "$choice"
+    read -r rest || true
+    choice=$choice$rest
+  fi
   case "$choice" in
     q) exit 0 ;;
     a) auto_follow ;;

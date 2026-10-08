@@ -6,14 +6,21 @@
 # that execs omo lets the `pi` profile, the coordinator's default, start
 # omo. Nothing else installs a `pi`.
 #
+# herdr-projects lists the `pi` profile only when pi looks signed in, which
+# it checks in $PI_CODING_AGENT_DIR/auth.json. omo reads that variable last
+# (after OMO_ and SENPI_CODING_AGENT_DIR), and it points at omo's own
+# default, ~/.omo/agent, so omo itself sees no change.
+#
 # The standing rule below is global, for every project: Claude Code and
 # omo both read ~/.claude/rules/, and the rule only applies to the agent
 # acting as a herdr-projects coordinator.
 { ... }:
 {
   den.aspects.home-omo-pi.provides.to-users.homeManager =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
+      home.sessionVariables.PI_CODING_AGENT_DIR = "${config.home.homeDirectory}/.omo/agent";
+
       home.packages = [
         (pkgs.writeShellScriptBin "pi" ''
           exec omo "$@"

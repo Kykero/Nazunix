@@ -12,7 +12,6 @@ What Nix provides, and what stays imperative:
 | herdr | binary, `config.toml` (`homes/herdr.nix`), agent integrations (`homes/herdr-integrations.nix`) | nothing |
 | zoetrope | `zoe`, the plugin linked, its key (`homes/zoetrope.nix`) | nothing |
 | clauth | binary, the plugin linked, its key and sidebar tag (`homes/clauth.nix`) | profiles (`clauth capture`) |
-| herdr-projects | `~/.local/bin` on `PATH` (`homes/herdr-projects.nix`) | plugin install, CLI link, `configure` |
 | Collie | `collie` binary (`homes/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
 
 ## herdr's config
@@ -25,8 +24,8 @@ on every switch, and the running server reloads it. The theme is
 herdr follows ghostty's Noctalia colours instead of a built-in palette.
 
 A key or row a plugin's own setup step appends (`setup-keys`,
-`clauth herdr install`, `herdr-projects configure`) is lost at the next
-switch. Put it in `herdr.settings` in that plugin's aspect instead.
+`clauth herdr install`) is lost at the next switch. Put it in
+`herdr.settings` in that plugin's aspect instead.
 
 Inside herdr, `prefix+shift+r` reloads the client side (sidebar rows).
 
@@ -49,126 +48,6 @@ agent whose folder exists; both are idempotent. They write hooks into
 `~/.claude/settings.json` and `~/.codex/`, which is why neither agent is
 configured through home-manager. An agent already running when the hook
 lands never reports its session: start it again.
-
-## herdr-projects
-
-### What it is
-
-You talk to one agent, the **coordinator**. It doesn't do any of the work
-itself. It splits what you ask for into **threads**, and each thread is a
-separate agent (Claude Code, Codex, ...) with its own git worktree and branch
-(`hp/<project>/<id>-<title>`), or a tab when the task has no repository.
-Each thread starts from a brief with the project's goal, your standing
-instructions, the shared memory and its own task. You don't brief each agent
-by hand anymore; you answer the ones that need you.
-
-A **project** is a folder, `~/.herdr-projects/<name>/`:
-
-| File | Role |
-|---|---|
-| `PROJECT.md` | goal, repos, settings, standing instructions |
-| `AGENTS.md` (+ `CLAUDE.md` link) | tells the agent started there that it is the coordinator |
-| `MEMORY.md`, `memory/` | shared memory; a thread's `## Remember` section flows back here |
-| `TASKS.md` | task list the coordinator keeps |
-| `threads/` | one record and report per thread |
-| `library/`, `uploads/` | files threads produced, files you hand them |
-
-The safety settings live in `~/.config/herdr-projects/config.toml`, outside
-any project folder, where no agent works.
-
-What you see in herdr:
-
-- **Sidebar**: each thread as `t-0003 · <title>`, with a state line:
-  `needs you` (red), `review · PR #4` (yellow), `working · ~40%`,
-  `working · 12m quiet`, `landing`, `idle`. Under it, the agent's own
-  activity line. The project's row sums it up (`2 need you · 3 working`),
-  and the list is sorted so whatever needs you comes first.
-- **Tab bar**: `projects: N need you`.
-- **Popup** (`prefix+a`): threads, tasks, inbox, routines, settings,
-  memory. Each thread report ends with a `## Next` list: press its number to
-  send that line back to the thread.
-- **Notifications** that name the project and the thread.
-
-A background **ticker** starts the thread agents (one per project about
-every 15 s) and follows pull requests. A failing check or a review comment
-goes back to the thread (the `pr-followup` routine). A merged PR resolves
-the thread and removes its worktree, workspace and branch. The report is
-always kept. The plugin never merges or pushes by itself; a merge happens
-when you send the thread its "Merge the PR" line.
-
-Safety is soft by default. The coordinator proposes threads and waits for
-your go-ahead (or `start_threads = "auto"`). Thread agents keep their normal
-permission prompts. Routines can't run shell commands until you enable them
-and approve each command. An agent running with permissions skipped can
-still edit all of this.
-
-### Install
-
-Needs herdr 0.9.1 or newer, both client and running server (`herdr status`).
-
-```bash
-herdr plugin install eliasstravik/herdr-projects
-herdr plugin list                                   # prints the plugin's folder
-ln -s <plugin folder>/target/release/herdr-projects ~/.local/bin/herdr-projects
-herdr-projects doctor
-herdr-projects configure --dry-run
-herdr-projects configure
-```
-
-The install downloads the release's static (musl) binary and checks it
-against `SHA256SUMS`, so no Rust toolchain is needed. `configure` adds the
-two agent rows (`$hp_state`, `$hp_activity`), the Space row (`$hp`), the
-popup key `prefix+a` and the tab-bar entry to herdr's config. It also adds
-progress hooks to `~/.claude/settings.json` and `~/.codex/hooks.json`.
-Every edit is journaled, so `herdr-projects unconfigure` removes exactly
-what it added.
-
-**Not yet declarative.** Its herdr-config half (rows, key, tab bar) does
-not survive a switch now that Nix owns `config.toml`; only the hooks in
-the agents' settings stay. Run `configure --dry-run`, then port what it
-prints into `herdr.settings` in `homes/herdr-projects.nix`, merging its
-agent-row tokens into clauth's rows.
-
-Optional: `gh` (logged in) for PR follow-up, `ssh`/`rsync` for threads on
-other machines. Neither is installed by the repo.
-
-### Use
-
-```bash
-herdr-projects new "Billing" --goal "Ship the billing page" --repo ~/dev/app
-herdr-projects open billing          # coordinator in this pane (--tab, --agent codex, --new)
-```
-
-Or, from herdr: `herdr plugin action invoke new --plugin herdr-projects`.
-Then tell the coordinator what you want in its pane. It restates the goal,
-proposes threads and starts the ones you name (or "all"). New worktrees
-start on the agent's folder-trust prompt, so a fresh thread shows
-`needs you` until you answer it in its pane.
-
-Other entry points:
-
-- `herdr-projects thread start`: start a thread yourself.
-- `herdr-projects thread adopt`: turn an agent pane you already have into a
-  thread.
-- `herdr-projects adopt-workspace`: turn the current workspace into a
-  project, with its agent as the first thread.
-
-Allow-list the binary in your agent **by subcommand, never bare**.
-Reading and steering are fine (`skill`, `context`, `report`, `inbox done`,
-`thread list`, `thread prompt`, `thread next`). Leave `thread resolve`,
-`sweep`, `delete`, `routine approve`, `configure` and `thread start` on the
-normal prompt.
-
-### Maintain
-
-```bash
-herdr-projects doctor [--fix]       # setup check; --fix repairs the plugin's own files
-herdr-projects ticker status
-herdr-projects update [--check]     # new binary, doctor --fix, ticker restart
-```
-
-Remove: `herdr-projects unconfigure`, `herdr-projects ticker stop`,
-`herdr plugin uninstall herdr-projects`. Projects stay in `~/.herdr-projects/`.
 
 ## zoetrope
 
@@ -230,9 +109,9 @@ becomes a profile, switched with `clauth <name>` or from its TUI, with live
 `CLAUDE_CONFIG_DIR`, so two accounts can work side by side in herdr.
 
 The herdr plugin is linked from the package's own source, so it always
-matches the binary. `prefix+shift+a` opens the dashboard in a popup
-(`prefix+a` is left to herdr-projects), and every claude or codex row in
-the sidebar ends with the account the pane spends. Do not run
+matches the binary. `prefix+a` opens the dashboard in a popup, and every
+claude or codex row in the sidebar ends with the account the pane spends.
+An `omo` pane gets no tag: omo keeps its own sign-ins. Do not run
 `clauth herdr install`: the Nix config already holds what it would
 append, and its edit would not survive a switch.
 

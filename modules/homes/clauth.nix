@@ -8,7 +8,6 @@
 # linked from the package's own source instead, so it always matches the
 # binary, and what `clauth herdr install` would append to herdr's config
 # (the popup key, the `$clauth` account tag in the agent rows) is set here.
-# The key is prefix+shift+a: plain prefix+a is herdr-projects' popup.
 #
 # Profiles and tokens live in ~/.clauth/ and never enter the repo. A switch
 # rewrites ~/.claude/.credentials.json and the `env` block of
@@ -39,7 +38,7 @@
       herdr.settings = {
         keys.command = [
           {
-            key = "prefix+shift+a";
+            key = "prefix+a";
             type = "plugin_action";
             command = "clauth.open";
             description = "clauth accounts";

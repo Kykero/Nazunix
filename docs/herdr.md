@@ -5,15 +5,18 @@ tabs and sessions like tmux, plus a sidebar that knows which pane runs
 `claude` or `codex` and whether it is working, idle or blocked. It runs inside
 ghostty. Everything here is part of the `full` profile only.
 
+An overview of the whole AI workflow, and of every file behind it, is in
+[modules/homes/ai/README.md](../modules/homes/ai/README.md).
+
 What Nix provides, and what stays imperative:
 
 | | Nix (repo) | By hand, once per machine |
 |---|---|---|
-| herdr | binary, `config.toml` (`homes/herdr.nix`), agent integrations (`homes/herdr-integrations.nix`) | nothing |
-| zoetrope | `zoe`, the plugin linked, its key (`homes/zoetrope.nix`) | nothing |
-| clauth | binary, the plugin linked, its key and sidebar tag (`homes/clauth.nix`) | profiles (`clauth capture`) |
-| herdr-projects | binary, the plugin linked, its key, rows, hooks, skill, default profiles (`homes/herdr-projects.nix`); omo as coordinator (`homes/omo-pi.nix`) | nothing |
-| Collie | `collie` binary (`homes/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
+| herdr | binary, `config.toml` (`homes/ai/herdr.nix`), agent integrations (`homes/ai/herdr-integrations.nix`) | nothing |
+| zoetrope | `zoe`, the plugin linked, its key (`homes/ai/zoetrope.nix`) | nothing |
+| clauth | binary, the plugin linked, its key and sidebar tag (`homes/ai/clauth.nix`) | profiles (`clauth capture`) |
+| herdr-projects | binary, the plugin linked, its key, rows, hooks, skill, default profiles (`homes/ai/herdr-projects.nix`); omo as coordinator (`homes/ai/omo-pi.nix`) | nothing |
+| Collie | `collie` binary (`homes/ai/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
 
 ## herdr's config
 
@@ -45,7 +48,7 @@ alone.
 These report each agent's native session id to herdr (session restore,
 zoetrope, omo-graph, clauth's pane tag). Working, idle and blocked do not
 come from them: herdr reads those from the agent's process and screen.
-`homes/herdr-integrations.nix` runs `herdr integration install claude`
+`homes/ai/herdr-integrations.nix` runs `herdr integration install claude`
 and `codex` on every switch, after creating `~/.claude` and `~/.codex`; a
 failed install only warns. They write hooks into `~/.claude/settings.json`
 and `~/.codex/`, which is why neither agent is configured through
@@ -67,7 +70,7 @@ herdr plugin action invoke open-tab --plugin furkankly.zoetrope   # own tab
 
 `zoe <id>` or `zoe <file>` also works on its own, and replays a finished
 session. To upgrade, bump `version`, both binary hashes (the release's
-`.sha512` files) and the source hash in `homes/zoetrope.nix`.
+`.sha512` files) and the source hash in `homes/ai/zoetrope.nix`.
 
 ## herdr-projects
 
@@ -79,7 +82,7 @@ instructions, `TASKS.md`, shared memory, thread reports). A ticker started
 with the herdr server launches the threads and follows pull requests; a
 merged pull request resolves its thread.
 
-Everything `herdr-projects configure` does is in `homes/herdr-projects.nix`
+Everything `herdr-projects configure` does is in `homes/ai/herdr-projects.nix`
 instead: the plugin is linked from the release (source plus its static
 binary), `prefix+shift+j` opens the popup, the tab bar counts what needs
 you, the sidebar rows carry the thread state (`$hp_sub`), the progress
@@ -92,7 +95,7 @@ The defaults, merged into `~/.config/herdr-projects/config.toml` on every
 switch (the rest of that file, safety and popup-made profiles, stays
 herdr-projects'), are `coordinator_profile = "pi"` and
 `thread_profile = "claude"`: the coordinator is OmO, through the `pi` on
-`PATH` from `homes/omo-pi.nix` (herdr starts the `pi` kind by running
+`PATH` from `homes/ai/omo-pi.nix` (herdr starts the `pi` kind by running
 `pi`; omo takes pi's flags). A global rule in
 `~/.claude/rules/herdr-projects-coordinator.md` tells the coordinator to
 resolve a finished thread, which closes its worktree and workspace, and
@@ -111,7 +114,7 @@ closes a finished one, `thread restart` brings one back. Projects and
 their state stay in `~/.herdr-projects/`, outside the repo.
 
 Known limit of omo as coordinator: herdr shows it as `pi` with its real
-state (`homes/omo.nix` for why that needs a renamed Claude Code), but
+state (`homes/ai/omo.nix` for why that needs a renamed Claude Code), but
 never learns its session id, so a coordinator that exits (or a herdr
 restart) is reopened as a fresh omo, not resumed. omo's own sessions stay
 under `~/.omo/agent/sessions/` (`omo --session <id>`). The workers are
@@ -173,8 +176,8 @@ The binary comes from `llm-agents` with the self-updater patched out;
 updates come with `lock.yml`. Profiles and tokens live in `~/.clauth/`
 (mode 0600), never in the repo. A switch rewrites
 `~/.claude/.credentials.json` and the `env` block of
-`~/.claude/settings.json`; the activation merges in `claude-plugins.nix`
-and `rtk.nix` leave that block alone.
+`~/.claude/settings.json`; the activation merges in
+`homes/ai/claude-plugins.nix` and `homes/ai/rtk.nix` leave that block alone.
 
 Once per machine, logged in to each account in turn:
 

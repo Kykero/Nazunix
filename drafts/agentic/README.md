@@ -34,4 +34,4 @@ each in `modules/homes/`.
 - **Not carried over from Windows:** the OpenAI Codex *app* (`gpt-6-astra`,
   computer-use plugins). Its output folder and state were wiped 2026-09-22.
   The Codex *CLI* is back as a second runtime from `llm-agents.nix`
-  (`modules/homes/codex.nix`), with a single account.
+  (`modules/homes/ai/codex.nix`), with a single account.

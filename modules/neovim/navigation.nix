@@ -1,7 +1,7 @@
 # smart-splits.nvim — seamless navigation between Neovim splits and
 # tmux panes.
 #
-# The tmux side of the contract is modules/homes/tmux.nix: Ctrl+hjkl /
+# The tmux side of the contract is modules/homes/shell/tmux.nix: Ctrl+hjkl /
 # Alt+hjkl, passed through to Neovim when @pane-is-vim is set.
 { ... }:
 {

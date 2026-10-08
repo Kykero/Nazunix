@@ -1,6 +1,6 @@
 # claudecode.nvim — bridges Neovim with the Claude Code CLI over the
 # MCP WebSocket protocol. The `claude` CLI itself is NOT provided here:
-# it comes with the full profile (modules/homes/claude-code.nix).
+# it comes with the full profile (modules/homes/ai/claude-code.nix).
 #
 # Claude runs in a tmux pane via the "external" terminal provider:
 # the MCP server lives in Neovim, the CLI connects back through

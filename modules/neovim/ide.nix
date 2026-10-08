@@ -1,7 +1,7 @@
 # `vimzuna`: Neovim as an IDE, i.e. the `vimzuna` tmux session (or a
 # re-attach to it): nvim in its own `nvim` window, closed with it. Shells,
 # builds and Claude are panes next to it, reached with Ctrl+hjkl
-# (homes/tmux.nix).
+# (homes/shell/tmux.nix).
 { den, ... }:
 {
   den.aspects.neovim = {

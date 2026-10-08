@@ -79,7 +79,7 @@ the only place anything gets evaluated or built.
 | 2 | `modules/nix/{settings,caches}.nix`, nh | done |
 | 3 | `profiles/{base,full}.nix`, `dazai-base` / `yamori-base` entities | done |
 | 4 | disko btrfs layout, GRUB, monthly scrub, zram (dazai); placeholder deleted | done |
-| 5 | `modules/users/nazuna.nix`, `modules/homes/{bash,btop}.nix`: `define-user`, `primary-user`, bash login shell, home-manager bash + btop | done |
+| 5 | `modules/users/nazuna.nix`, `modules/homes/shell/bash.nix`, `modules/homes/tui/btop.nix`: `define-user`, `primary-user`, bash login shell, home-manager bash + btop | done |
 | 6 | `modules/apps/{bootstrap,warm,rebuild}.nix`: `den-bootstrap` (gum installer from the live ISO; generates `hardware.nix`, renders a new host from `templates/host/` or patches an existing host's disk device), `den-warm` (pull the full closure via `nh os build`), `den-rebuild` (Noctalia snapshot, rebase + push, `nh os switch`); CI builds all three | done |
 
 ### Phases 7–11

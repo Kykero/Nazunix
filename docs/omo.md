@@ -7,12 +7,15 @@ stays for `claude` and `codex`: omo shows one session per TUI. In herdr,
 an omo pane shows as `pi` with its real state (working, done, blocked),
 reported by omo itself (see "Session graph" for how).
 
+An overview of the whole AI workflow, and of every file behind it, is in
+[modules/homes/ai/README.md](../modules/homes/ai/README.md).
+
 What Nix provides, and what stays imperative:
 
 | | Nix (repo) | By hand, once per machine |
 |---|---|---|
-| omo | binary (`homes/omo.nix`) | sign-ins, default model |
-| omo-graph | script (`homes/omo-graph.nix`) | nothing |
+| omo | binary (`homes/ai/omo.nix`) | sign-ins, default model |
+| omo-graph | script (`homes/ai/omo-graph.nix`) | nothing |
 | config | nothing | `~/.omo/omo.jsonc` if ever needed |
 
 ## Sign in
@@ -62,7 +65,7 @@ OmO's PostHog usage telemetry.
 ## Coordinator of herdr-projects
 
 OmO is the default coordinator of herdr-projects projects: a `pi` on
-`PATH` (`homes/omo-pi.nix`) execs omo, since herdr starts the `pi` agent
+`PATH` (`homes/ai/omo-pi.nix`) execs omo, since herdr starts the `pi` agent
 kind by running `pi`. The coordinator's standing rule (resolve finished
 threads, bring them back on request) is global, in
 `~/.claude/rules/herdr-projects-coordinator.md`. See docs/herdr.md.
@@ -71,7 +74,7 @@ threads, bring them back on request) is global, in
 
 With the `anthropic-subscription` provider, omo runs real Claude Code
 processes: its main Claude and short-lived helpers (a Haiku scout, say).
-`homes/omo.nix` runs them as `omo-claude` (the same claude-code, under
+`homes/ai/omo.nix` runs them as `omo-claude` (the same claude-code, under
 another name). As `claude`, herdr would spot them in the pane, contradict
 omo's own `pi` report and show an idle `claude` instead.
 

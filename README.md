@@ -41,7 +41,8 @@ runs only the first block.
 
 **AI** (full)
 - Claude Code and Codex CLIs, the Claude and ChatGPT/Codex desktop apps
-- herdr, OmO, zoetrope, Collie, clauth
+- herdr, OmO (also herdr-projects coordinator), herdr-projects, zoetrope,
+  Collie, clauth, omo-graph
 - Claude Code tooling: superpowers and caveman plugins, SuperClaude
   (`/sc:*` commands and agents), context7 and serena MCP servers, rtk hook,
   graphify skill
@@ -73,7 +74,7 @@ runs only the first block.
 - [Keyboard (AZERTY) in niri](docs/keyboard.md): transposed binds and the
   Noctalia shortcuts
 - [herdr and its plugins](docs/herdr.md): Nix-owned config, linked
-  plugins and integrations, zoetrope, Collie, clauth
+  plugins and integrations, herdr-projects with OmO, zoetrope, Collie, clauth
 - [OmO standalone](docs/omo.md): the `omo` agent on trial next to herdr,
   Claude and ChatGPT sign-ins, where its state lives
 - [Roadmap](docs/ROADMAP.md): architecture and phase status

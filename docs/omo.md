@@ -58,6 +58,14 @@ project-local settings or skills.
 The package wrapper sets `OMO_SEND_ANONYMOUS_TELEMETRY=0`, which turns off
 OmO's PostHog usage telemetry.
 
+## Coordinator of herdr-projects
+
+OmO is the default coordinator of herdr-projects projects: a `pi` on
+`PATH` (`homes/omo-pi.nix`) execs omo, since herdr starts the `pi` agent
+kind by running `pi`. The coordinator's standing rule (resolve finished
+threads, bring them back on request) is global, in
+`~/.claude/rules/herdr-projects-coordinator.md`. See docs/herdr.md.
+
 ## Session graph
 
 With the `anthropic-subscription` provider, omo runs real Claude Code

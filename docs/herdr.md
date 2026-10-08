@@ -12,6 +12,7 @@ What Nix provides, and what stays imperative:
 | herdr | binary, `config.toml` (`homes/herdr.nix`), agent integrations (`homes/herdr-integrations.nix`) | nothing |
 | zoetrope | `zoe`, the plugin linked, its key (`homes/zoetrope.nix`) | nothing |
 | clauth | binary, the plugin linked, its key and sidebar tag (`homes/clauth.nix`) | profiles (`clauth capture`) |
+| herdr-projects | binary, the plugin linked, its key, rows, hooks, skill, default profiles (`homes/herdr-projects.nix`); omo as coordinator (`homes/omo-pi.nix`) | nothing |
 | Collie | `collie` binary (`homes/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
 
 ## herdr's config
@@ -64,6 +65,53 @@ herdr plugin action invoke open-tab --plugin furkankly.zoetrope   # own tab
 `zoe <id>` or `zoe <file>` also works on its own, and replays a finished
 session. To upgrade, bump `version`, both binary hashes (the release's
 `.sha512` files) and the source hash in `homes/zoetrope.nix`.
+
+## herdr-projects
+
+One coordinator agent hands the work out to worker threads: each thread
+is an agent (Claude Code, Codex...) in its own pane, on its own git
+worktree and branch (`hp/<project>/<id>-<title>`). Projects live in
+`~/.herdr-projects/<name>/` (`PROJECT.md` with the goal and standing
+instructions, `TASKS.md`, shared memory, thread reports). A ticker started
+with the herdr server launches the threads and follows pull requests; a
+merged pull request resolves its thread.
+
+Everything `herdr-projects configure` does is in `homes/herdr-projects.nix`
+instead: the plugin is linked from the release (source plus its static
+binary), `prefix+shift+j` opens the popup, the tab bar counts what needs
+you, the sidebar rows carry the thread state (`$hp_sub`), the progress
+hooks are merged into `~/.claude/settings.json` and `~/.codex/hooks.json`,
+and the autoproject skill is linked. Do not run `configure`: its edits to
+herdr's config would not survive a switch. `herdr-projects update`
+cannot replace the store binary; bump `version` and the hashes instead.
+
+The defaults, merged into `~/.config/herdr-projects/config.toml` on every
+switch (the rest of that file, safety and popup-made profiles, stays
+herdr-projects'), are `coordinator_profile = "pi"` and
+`thread_profile = "claude"`: the coordinator is OmO, through the `pi` on
+`PATH` from `homes/omo-pi.nix` (herdr starts the `pi` kind by running
+`pi`; omo takes pi's flags). A global rule in
+`~/.claude/rules/herdr-projects-coordinator.md` tells the coordinator to
+resolve a finished thread, which closes its worktree and workspace, and
+how to bring one back.
+
+```bash
+herdr-projects new "Billing" --goal "Ship the billing page" --repo ~/dev/app
+herdr-projects open billing --tab    # the coordinator, in the project's workspace
+herdr-projects overview              # threads grouped by what needs you
+herdr-projects doctor
+```
+
+Then tell the coordinator what you want. It proposes threads and waits
+for a go (or `start_threads = "auto"`). `herdr-projects thread resolve`
+closes a finished one, `thread restart` brings one back. Projects and
+their state stay in `~/.herdr-projects/`, outside the repo.
+
+Known limit: omo starts its own Claude Code with no user settings, so
+herdr's hooks never fire there. herdr shows the coordinator pane as
+`claude` and always `idle`, and the ticker may nudge it while it works.
+The workers are real `claude` or `codex` panes and report normally.
+`omo-graph` shows every session, the coordinator's included (docs/omo.md).
 
 ## Collie
 

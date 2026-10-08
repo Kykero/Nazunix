@@ -68,17 +68,19 @@ but never its session id, its state stays `idle`, and zoetrope's
 `prefix+shift+z` has nothing to open there.
 
 The transcripts are ordinary Claude Code sessions in `~/.claude/projects/`,
-and the session id is on each child's command line. In a split beside
-the omo pane:
+and the session id is on each child's command line. `omo-graph` looks
+there and in herdr's own record of every claude and codex pane, so one
+pane shows every live session: herdr-projects threads, plain `claude` or
+`codex` panes, and omo's children.
 
 ```bash
-omo-graph            # follow omo's main Claude (the oldest live child)
-omo-graph -l         # list the live children: number, session id, model
-omo-graph -n 2       # follow another one from the list
-omo-graph -p w3:p1   # only the omo in that herdr pane (`herdr agent list`)
+omo-graph      # the list, most recent first; a number opens that graph,
+               # q in the graph comes back to the list, a = auto-follow
+omo-graph -a   # follow the newest session, switch when a new one starts
+omo-graph -l   # print the list and exit
 ```
 
-The graph follows the session live. omo's own turns (its pi-format
+Each graph follows its session live. omo's own turns (its pi-format
 sessions in `~/.omo/agent/sessions/`) and a ChatGPT-provider run have no
 graph: zoetrope reads only Claude Code and Codex transcripts.
 

@@ -4,7 +4,8 @@
 terminal coding agent: the OMO plugin running on the senpi engine, a fork
 of pi. It is on trial next to herdr, in the `full` profile only. herdr
 stays for `claude` and `codex`: omo shows one session per TUI, and herdr
-has no omo integration, so an omo pane gets no working/blocked state.
+does not recognize omo's own process, so an omo pane gets no
+working/blocked state of its own.
 
 What Nix provides, and what stays imperative:
 
@@ -71,12 +72,15 @@ threads, bring them back on request) is global, in
 With the `anthropic-subscription` provider, omo runs real Claude Code
 processes: its main Claude and short-lived helpers (a Haiku scout, say).
 They start with `--setting-sources=`, so none of the user settings apply,
-herdr's hooks included. herdr sees a `claude` process in the omo pane
-but never its session id, its state stays `idle`, and zoetrope's
+herdr's session hook included. herdr sees a `claude` process in the omo
+pane (so it labels the pane `claude`, `idle`: omo's UI does not match the
+Claude Code screen rules) but never learns a session id, and zoetrope's
 `prefix+shift+z` has nothing to open there.
 
 The transcripts are ordinary Claude Code sessions in `~/.claude/projects/`,
-and the session id is on each child's command line. `omo-graph` looks
+and the session id is on each child's command line (`--session-id`, or
+`--resume` for a resumed one; a fork takes the newest transcript of its
+folder). `omo-graph` looks
 there and in herdr's own record of every claude and codex pane, so one
 pane shows every live session: herdr-projects threads, plain `claude` or
 `codex` panes, and omo's children.

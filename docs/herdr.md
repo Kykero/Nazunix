@@ -42,13 +42,16 @@ alone.
 
 ## Agent integrations
 
-These let herdr learn each agent's state and session id (session restore,
-zoetrope, clauth's pane tag). `homes/herdr-integrations.nix` runs
-`herdr integration install claude` and `codex` on every switch, for each
-agent whose folder exists; both are idempotent. They write hooks into
-`~/.claude/settings.json` and `~/.codex/`, which is why neither agent is
-configured through home-manager. An agent already running when the hook
-lands never reports its session: start it again.
+These report each agent's native session id to herdr (session restore,
+zoetrope, omo-graph, clauth's pane tag). Working, idle and blocked do not
+come from them: herdr reads those from the agent's process and screen.
+`homes/herdr-integrations.nix` runs `herdr integration install claude`
+and `codex` on every switch, after creating `~/.claude` and `~/.codex`; a
+failed install only warns. They write hooks into `~/.claude/settings.json`
+and `~/.codex/`, which is why neither agent is configured through
+home-manager. The hooks run `python3`, which the module puts on `PATH`. An
+agent already running when the hook lands never reports its session: start
+it again.
 
 ## zoetrope
 
@@ -107,11 +110,18 @@ for a go (or `start_threads = "auto"`). `herdr-projects thread resolve`
 closes a finished one, `thread restart` brings one back. Projects and
 their state stay in `~/.herdr-projects/`, outside the repo.
 
-Known limit: omo starts its own Claude Code with no user settings, so
-herdr's hooks never fire there. herdr shows the coordinator pane as
-`claude` and always `idle`, and the ticker may nudge it while it works.
-The workers are real `claude` or `codex` panes and report normally.
-`omo-graph` shows every session, the coordinator's included (docs/omo.md).
+Known limits of omo as coordinator:
+
+- herdr does not recognize omo's own process, only the Claude Code it
+  starts (named `claude`), so the coordinator pane shows as `claude`, and
+  `idle`: the `claude` screen rules do not match omo's UI. The ticker's
+  input guard still keeps it from typing into a busy omo.
+- herdr never learns omo's session id, so a coordinator that exits (or a
+  herdr restart) is reopened as a fresh omo, not resumed. omo's own
+  sessions stay under `~/.omo/agent/sessions/`.
+- The workers are real `claude` or `codex` panes and report normally.
+  `omo-graph` shows every session, the coordinator's Claude included
+  (docs/omo.md).
 
 ## Collie
 
@@ -159,7 +169,8 @@ becomes a profile, switched with `clauth <name>` or from its TUI, with live
 The herdr plugin is linked from the package's own source, so it always
 matches the binary. `prefix+a` opens the dashboard in a popup, and every
 claude or codex row in the sidebar ends with the account the pane spends.
-An `omo` pane gets no tag: omo keeps its own sign-ins. Do not run
+An `omo` pane is seen as `claude` and tagged with the global account,
+which is not what omo spends: omo keeps its own sign-ins. Do not run
 `clauth herdr install`: the Nix config already holds what it would
 append, and its edit would not survive a switch.
 

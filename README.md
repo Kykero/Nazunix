@@ -41,7 +41,7 @@ runs only the first block.
 
 **AI** (full)
 - Claude Code and Codex CLIs, the Claude and ChatGPT/Codex desktop apps
-- herdr, OmO, zoetrope, herdr-projects, Collie
+- herdr, OmO, zoetrope, herdr-projects, Collie, clauth
 - Claude Code tooling: superpowers and caveman plugins, SuperClaude
   (`/sc:*` commands and agents), context7 and serena MCP servers, rtk hook,
   graphify skill
@@ -55,7 +55,8 @@ runs only the first block.
 **Not declarative, done once by hand after the first boot**
 - sign-ins: `sudo tailscale up`, OneDrive (Microsoft window on first
   mount), `gh auth login`, `glab auth login`, `claude` then `/login`,
-  `codex login`, OmO, Aerion accounts, Teams, WhatsApp
+  `codex login`, clauth profiles (`clauth capture`), OmO, Aerion
+  accounts, Teams, WhatsApp
 - Noctalia plugins: the config enables the tailscale plugin, install it
   from the GUI if it is not fetched
 - herdr integrations and plugins, Collie (`collie start`,
@@ -72,7 +73,7 @@ runs only the first block.
 - [Keyboard (AZERTY) in niri](docs/keyboard.md): transposed binds and the
   Noctalia shortcuts
 - [herdr and its plugins](docs/herdr.md): seeded config and Noctalia
-  theme, herdr-projects, zoetrope, Collie, and their one-time setup
+  theme, herdr-projects, zoetrope, Collie, clauth, and their one-time setup
 - [OmO standalone](docs/omo.md): the `omo` agent on trial next to herdr,
   Claude and ChatGPT sign-ins, where its state lives
 - [Roadmap](docs/ROADMAP.md): architecture and phase status

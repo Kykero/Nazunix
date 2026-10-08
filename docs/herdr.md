@@ -13,6 +13,7 @@ What Nix provides, and what stays imperative:
 | herdr-projects | `~/.local/bin` on `PATH` (`homes/herdr-projects.nix`) | plugin install, CLI link, `configure` |
 | zoetrope | `zoe` binary (`homes/zoetrope.nix`) | plugin install, `setup-keys` |
 | Collie | `collie` binary (`homes/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
+| clauth | `clauth` binary (`homes/clauth.nix`, from `llm-agents`) | profiles, `clauth herdr install` |
 
 ## herdr's config
 
@@ -211,3 +212,52 @@ install on purpose.
 
 Remove: `collie uninstall` (stops the service, removes the unit and the
 serve mapping). State stays in `~/.local/state/collie/`.
+
+## clauth
+
+Multi-account manager for Claude Code (and Codex): each logged-in account
+becomes a profile, switched with `clauth <name>` or from its TUI, with live
+5h/7d usage bars and a fallback chain that moves off an exhausted account.
+`clauth start <name>` runs `claude` under another account in its own
+`CLAUDE_CONFIG_DIR`, so two accounts can work side by side in herdr. The
+herdr plugin opens the dashboard in a popup and tags every agent pane with
+the account it spends.
+
+The binary comes from `llm-agents`, with the self-updater patched out.
+That also turns off clauth's own refresh of its herdr plugin, so after a
+`lock.yml` run that bumps clauth, re-run `clauth herdr install`. Profiles
+and tokens live in `~/.clauth/` (mode 0600), never in the repo. A switch
+rewrites `~/.claude/.credentials.json` and the `env` block of
+`~/.claude/settings.json`; the activation merges in `claude-plugins.nix`
+and `rtk.nix` leave that block alone.
+
+Once per machine, logged in to each account in turn:
+
+```bash
+clauth capture <name>      # snapshot the current Claude Code login
+clauth login <name>        # or log a new account in directly
+clauth herdr install --key prefix+shift+a
+```
+
+`clauth herdr install` defaults to `prefix+a`, which herdr-projects
+already takes, hence `--key`. It installs the plugin, then appends the key
+and the `claude` sidebar row (`$clauth`) to herdr's config after a diff and
+a prompt. Add the `codex` row by hand:
+
+```toml
+[ui.sidebar.agents.rows_by_agent]
+codex = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent", "$clauth"]]
+```
+
+herdr-projects' `configure` also writes agent rows (`$hp_state`,
+`$hp_activity`). Whichever runs second edits the same table, so check the
+result with `herdr config check` and merge the tokens into one row by hand
+if needed.
+
+Optional: the Claude Code plugin (MCP tools `profiles`, `switch_profile`,
+`delegate`, `monitor`) installs from the TUI's Services tab, `plugin` row,
+`f`. Decline the offer to install shell completions on first launch: the
+fish completions already come with the package, and fish's config is
+read-only.
+
+Remove: `clauth herdr uninstall`. Profiles stay in `~/.clauth/`.

@@ -30,6 +30,8 @@
           btop
         ];
 
+        time.timeZone = "Europe/Paris";
+
         services.openssh.enable = true;
         networking.networkmanager.enable = true;
       };

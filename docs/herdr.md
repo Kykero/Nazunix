@@ -9,42 +9,46 @@ What Nix provides, and what stays imperative:
 
 | | Nix (repo) | By hand, once per machine |
 |---|---|---|
-| herdr | binary (`homes/herdr.nix`), seed `config.toml` | agent integrations |
+| herdr | binary, `config.toml` (`homes/herdr.nix`), agent integrations (`homes/herdr-integrations.nix`) | nothing |
+| zoetrope | `zoe`, the plugin linked, its key (`homes/zoetrope.nix`) | nothing |
+| clauth | binary, the plugin linked, its key and sidebar tag (`homes/clauth.nix`) | profiles (`clauth capture`) |
 | herdr-projects | `~/.local/bin` on `PATH` (`homes/herdr-projects.nix`) | plugin install, CLI link, `configure` |
-| zoetrope | `zoe` binary (`homes/zoetrope.nix`) | plugin install, `setup-keys` |
 | Collie | `collie` binary (`homes/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
-| clauth | `clauth` binary (`homes/clauth.nix`, from `llm-agents`) | profiles, `clauth herdr install` |
 
 ## herdr's config
 
-`~/.config/herdr/config.toml` is **seeded, not linked**. On activation,
-home-manager writes it only if it is missing, with onboarding skipped and
-`theme.name = "terminal"`. That theme draws herdr's UI from the terminal's
-ANSI palette, so herdr follows ghostty's Noctalia colours instead of a
-built-in palette. After that the file is yours and the plugins': they add
-their keys and sidebar rows to it, and home-manager never overwrites it.
+`~/.config/herdr/config.toml` is **owned by Nix**. It is generated from the
+`herdr.settings` option, which every aspect can add to, checked with
+`herdr config check` at build time, then copied (not linked) and rewritten
+on every switch, and the running server reloads it. The theme is
+`terminal`, which draws herdr's UI from the terminal's ANSI palette, so
+herdr follows ghostty's Noctalia colours instead of a built-in palette.
 
-To start over from the seed: delete the file and rebuild. Useful commands:
-
-```bash
-herdr config check             # validate the file
-herdr server reload-config     # apply it to the running server
-```
+A key or row a plugin's own setup step appends (`setup-keys`,
+`clauth herdr install`, `herdr-projects configure`) is lost at the next
+switch. Put it in `herdr.settings` in that plugin's aspect instead.
 
 Inside herdr, `prefix+shift+r` reloads the client side (sidebar rows).
 
+## Plugins
+
+The `herdr.plugins` option maps a plugin id to its folder in the store. On
+every switch each one is registered with `herdr plugin link`, which works
+without a running server and runs no build steps, so whatever a plugin
+needs on `PATH` comes from its aspect. A plugin linked from the store and
+no longer in the option is unlinked. `herdr plugin list` shows them as
+`local:/nix/store/...`. Plugins installed by hand from GitHub are left
+alone.
+
 ## Agent integrations
 
-These let herdr learn each agent's session id (needed for session restore
-and for zoetrope):
-
-```bash
-herdr integration install claude
-herdr integration install codex
-```
-
-They write hooks into `~/.claude/settings.json` and `~/.codex/`, which
-is why neither agent is configured through home-manager.
+These let herdr learn each agent's state and session id (session restore,
+zoetrope, clauth's pane tag). `homes/herdr-integrations.nix` runs
+`herdr integration install claude` and `codex` on every switch, for each
+agent whose folder exists; both are idempotent. They write hooks into
+`~/.claude/settings.json` and `~/.codex/`, which is why neither agent is
+configured through home-manager. An agent already running when the hook
+lands never reports its session: start it again.
 
 ## herdr-projects
 
@@ -119,6 +123,12 @@ progress hooks to `~/.claude/settings.json` and `~/.codex/hooks.json`.
 Every edit is journaled, so `herdr-projects unconfigure` removes exactly
 what it added.
 
+**Not yet declarative.** Its herdr-config half (rows, key, tab bar) does
+not survive a switch now that Nix owns `config.toml`; only the hooks in
+the agents' settings stay. Run `configure --dry-run`, then port what it
+prints into `herdr.settings` in `homes/herdr-projects.nix`, merging its
+agent-row tokens into clauth's rows.
+
 Optional: `gh` (logged in) for PR follow-up, `ssh`/`rsync` for threads on
 other machines. Neither is installed by the repo.
 
@@ -162,21 +172,19 @@ Remove: `herdr-projects unconfigure`, `herdr-projects ticker stop`,
 
 ## zoetrope
 
-Draws the focused agent's session as a live flow graph. `zoe` comes from
-the repo, so the plugin's install step finds it and installs nothing.
+Draws the focused agent's session as a live flow graph. Focus an agent
+pane and press `prefix+shift+z`: the graph opens split beside the pane and
+follows the session; the same key with the graph focused closes it. The
+other placements stay actions:
 
 ```bash
-herdr plugin install furkankly/zoetrope/herdr-plugin
-herdr plugin action invoke setup-keys --plugin furkankly.zoetrope
+herdr plugin action invoke open --plugin furkankly.zoetrope       # overlay
+herdr plugin action invoke open-tab --plugin furkankly.zoetrope   # own tab
 ```
 
-Focus an agent pane and press `prefix+shift+z`: the graph opens over the
-pane and follows the session. The same key closes it. `setup-keys` also
-writes the split (`prefix+shift+v`) and tab (`prefix+shift+c`) placements
-into the config as comments. Requires the agent integrations above.
-
-To upgrade `zoe`, bump `version` and both hashes in `homes/zoetrope.nix`
-(from the release's `.sha512` files).
+`zoe <id>` or `zoe <file>` also works on its own, and replays a finished
+session. To upgrade, bump `version`, both binary hashes (the release's
+`.sha512` files) and the source hash in `homes/zoetrope.nix`.
 
 ## Collie
 
@@ -219,15 +227,19 @@ Multi-account manager for Claude Code (and Codex): each logged-in account
 becomes a profile, switched with `clauth <name>` or from its TUI, with live
 5h/7d usage bars and a fallback chain that moves off an exhausted account.
 `clauth start <name>` runs `claude` under another account in its own
-`CLAUDE_CONFIG_DIR`, so two accounts can work side by side in herdr. The
-herdr plugin opens the dashboard in a popup and tags every agent pane with
-the account it spends.
+`CLAUDE_CONFIG_DIR`, so two accounts can work side by side in herdr.
 
-The binary comes from `llm-agents`, with the self-updater patched out.
-That also turns off clauth's own refresh of its herdr plugin, so after a
-`lock.yml` run that bumps clauth, re-run `clauth herdr install`. Profiles
-and tokens live in `~/.clauth/` (mode 0600), never in the repo. A switch
-rewrites `~/.claude/.credentials.json` and the `env` block of
+The herdr plugin is linked from the package's own source, so it always
+matches the binary. `prefix+shift+a` opens the dashboard in a popup
+(`prefix+a` is left to herdr-projects), and every claude or codex row in
+the sidebar ends with the account the pane spends. Do not run
+`clauth herdr install`: the Nix config already holds what it would
+append, and its edit would not survive a switch.
+
+The binary comes from `llm-agents` with the self-updater patched out;
+updates come with `lock.yml`. Profiles and tokens live in `~/.clauth/`
+(mode 0600), never in the repo. A switch rewrites
+`~/.claude/.credentials.json` and the `env` block of
 `~/.claude/settings.json`; the activation merges in `claude-plugins.nix`
 and `rtk.nix` leave that block alone.
 
@@ -236,28 +248,10 @@ Once per machine, logged in to each account in turn:
 ```bash
 clauth capture <name>      # snapshot the current Claude Code login
 clauth login <name>        # or log a new account in directly
-clauth herdr install --key prefix+shift+a
 ```
-
-`clauth herdr install` defaults to `prefix+a`, which herdr-projects
-already takes, hence `--key`. It installs the plugin, then appends the key
-and the `claude` sidebar row (`$clauth`) to herdr's config after a diff and
-a prompt. Add the `codex` row by hand:
-
-```toml
-[ui.sidebar.agents.rows_by_agent]
-codex = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent", "$clauth"]]
-```
-
-herdr-projects' `configure` also writes agent rows (`$hp_state`,
-`$hp_activity`). Whichever runs second edits the same table, so check the
-result with `herdr config check` and merge the tokens into one row by hand
-if needed.
 
 Optional: the Claude Code plugin (MCP tools `profiles`, `switch_profile`,
 `delegate`, `monitor`) installs from the TUI's Services tab, `plugin` row,
 `f`. Decline the offer to install shell completions on first launch: the
 fish completions already come with the package, and fish's config is
 read-only.
-
-Remove: `clauth herdr uninstall`. Profiles stay in `~/.clauth/`.

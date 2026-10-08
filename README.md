@@ -59,8 +59,8 @@ runs only the first block.
   accounts, Teams, WhatsApp
 - Noctalia plugins: the config enables the tailscale plugin, install it
   from the GUI if it is not fetched
-- herdr integrations and plugins, Collie (`collie start`,
-  `~/.config/collie/.env`), see [herdr.md](docs/herdr.md)
+- herdr-projects, Collie (`collie start`, `~/.config/collie/.env`), see
+  [herdr.md](docs/herdr.md)
 
 ## Documentation
 
@@ -72,8 +72,8 @@ runs only the first block.
   relaunch loop, live niri tweaks, resetting the disk image
 - [Keyboard (AZERTY) in niri](docs/keyboard.md): transposed binds and the
   Noctalia shortcuts
-- [herdr and its plugins](docs/herdr.md): seeded config and Noctalia
-  theme, herdr-projects, zoetrope, Collie, clauth, and their one-time setup
+- [herdr and its plugins](docs/herdr.md): Nix-owned config, linked
+  plugins and integrations, herdr-projects, zoetrope, Collie, clauth
 - [OmO standalone](docs/omo.md): the `omo` agent on trial next to herdr,
   Claude and ChatGPT sign-ins, where its state lives
 - [Roadmap](docs/ROADMAP.md): architecture and phase status

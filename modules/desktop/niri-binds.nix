@@ -24,6 +24,10 @@
 #                                                ^ resolves through us, $ is
 #                                                ASCII on fr
 #
+# Departure from the default: windows are never stacked in a column here, so
+# J/K walk workspaces (like Page_Down/Page_Up) and the in-column up/down moves
+# go to ^ and $ (in place of consume-or-expel, still on Comma/semicolon).
+#
 # Programs: ghostty (terminal.nix); launcher and lock go through Noctalia's
 # IPC instead of fuzzel/swaylock.
 { ... }:
@@ -130,8 +134,10 @@
       "Mod+Up".action.focus-window-up = [ ];
       "Mod+Right".action.focus-column-right = [ ];
       "Mod+H".action.focus-column-left = [ ];
-      "Mod+J".action.focus-window-down = [ ];
-      "Mod+K".action.focus-window-up = [ ];
+      "Mod+J".action.focus-workspace-down = [ ];
+      "Mod+K".action.focus-workspace-up = [ ];
+      "Mod+BracketLeft".action.focus-window-up = [ ];
+      "Mod+dollar".action.focus-window-down = [ ];
       "Mod+L".action.focus-column-right = [ ];
 
       "Mod+Ctrl+Left".action.move-column-left = [ ];
@@ -139,8 +145,10 @@
       "Mod+Ctrl+Up".action.move-window-up = [ ];
       "Mod+Ctrl+Right".action.move-column-right = [ ];
       "Mod+Ctrl+H".action.move-column-left = [ ];
-      "Mod+Ctrl+J".action.move-window-down = [ ];
-      "Mod+Ctrl+K".action.move-window-up = [ ];
+      "Mod+Ctrl+J".action.move-column-to-workspace-down = [ ];
+      "Mod+Ctrl+K".action.move-column-to-workspace-up = [ ];
+      "Mod+Ctrl+BracketLeft".action.move-window-up = [ ];
+      "Mod+Ctrl+dollar".action.move-window-down = [ ];
       "Mod+Ctrl+L".action.move-column-right = [ ];
 
       "Mod+Home".action.focus-column-first = [ ];
@@ -231,10 +239,6 @@
       "Mod+Ctrl+7".action.move-column-to-workspace = 7;
       "Mod+Ctrl+underscore".action.move-column-to-workspace = 8;
       "Mod+Ctrl+9".action.move-column-to-workspace = 9;
-
-      # move the focused window in and out of a column (QWERTY: Mod+[ and Mod+])
-      "Mod+BracketLeft".action.consume-or-expel-window-left = [ ];
-      "Mod+dollar".action.consume-or-expel-window-right = [ ];
 
       # consume one window from the right into the column / expel the bottom one
       "Mod+Comma".action.consume-window-into-column = [ ];

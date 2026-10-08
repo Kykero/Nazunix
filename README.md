@@ -2,79 +2,76 @@
 
 Declarative NixOS for a small personal fleet (`yamori` desktop, `dazai`
 laptop, user `nazuna`), built on flake-parts, import-tree and the den
-framework. Desktop: niri + Noctalia, AZERTY + US (Alt+Shift); ghostty, fish and Zen Browser
-for every user.
+framework. Desktop: niri + Noctalia, AZERTY + US (Alt+Shift); ghostty, fish
+and Zen Browser for every user. Each machine also has a `-base` twin, the
+install gateway, booted first with only the base profile.
 
-The repo is the installer: `den-bootstrap` runs from a NixOS live USB, wipes
-the chosen disk, installs the `-base` gateway and then the full profile.
+This file is an entry point: each folder under `modules/` has its own README,
+and the procedures live in [`docs/`](docs/).
 
-## What an installed machine gets
+## Install
 
-Every host runs the `full` profile; its `-base` twin (the install gateway)
-runs only the first block.
+The repo is the installer: `den-bootstrap` runs from a NixOS live USB. Follow
+[docs/install.md](docs/install.md).
 
-**Base** (every host, `-base` included)
-- Nix: flakes, the flake's nixpkgs as the system one, binary caches
-  (cache.nixos.org, numtide, nix-community), unfree allowed, `nh` with
-  automatic gc
-- AZERTY on the console, NetworkManager, OpenSSH
-- Tailscale daemon
-- Neovim from Vimzuna (`nvim`, `vimzuna`), vim, btop
-- git, `gh`, `glab`, devenv + direnv (nix-direnv)
-- user `nazuna` (wheel), fish as login shell, bash kept for scripts
-- `den-rebuild` / `den-warm` for day-2 rebuilds
+## Day 2
 
-**Desktop** (full)
-- niri from nixpkgs, AZERTY binds, window rules, two named workspaces,
-  background blur
-- Noctalia v5: bar, launcher, notifications, lock screen, and its greetd
-  greeter as the login screen; its config is seeded once per machine from
-  `modules/desktop/noctalia/<host>.toml` (or `base.toml`), then tuned
-  locally and snapshotted back by `den-rebuild`
-- PipeWire, BlueZ, UPower + power-profiles-daemon
-- Ghostty (terminal), Zen Browser, Nautilus (+ gvfs), Zathura (PDF),
-  JetBrains Mono Nerd Font, GTK apps themed from Noctalia (adw-gtk3)
-- OneDrive mounted on demand at `~/OneDrive` (onedriver, FUSE; quota
-  cached so Nautilus does not freeze)
-- Obsidian, Aerion (mail, Gmail/Microsoft OAuth), Teams
-  (teams-for-linux), WhatsApp (whatsapp-electron)
+- [docs/den-rebuild.md](docs/den-rebuild.md): updating an installed machine
+  with `den-rebuild`
+- [docs/vm.md](docs/vm.md): trying changes in a VM with `nix run .#vm-<host>`
 
-**AI** (full)
-- Claude Code and Codex CLIs, the Claude and ChatGPT/Codex desktop apps
-- herdr, OmO (also herdr-projects coordinator), herdr-projects, zoetrope,
-  Collie, clauth, omo-graph
-- Claude Code tooling: superpowers and caveman plugins, SuperClaude
-  (`/sc:*` commands and agents), context7 and serena MCP servers, rtk hook,
-  graphify skill
+## What a machine gets
 
-**Per machine**
-- both: GRUB (EFI, Elegant theme), systemd initrd, btrfs on the whole disk
-  (`@root`, `@home`, `@nix`, `@log`, zstd) laid out by disko, monthly scrub
-- `dazai` (laptop, 8 GB): zram swap, lid suspend, display scale 1.2
-- `yamori` (desktop, 32 GB): no zram
+Every host runs the `full` profile (base + desktop + AI); its `-base` twin
+runs only `base`. The contents of each profile are listed in
+[modules/profiles/README.md](modules/profiles/README.md), per-machine
+settings (boot, disk layout, zram, display, gaming) in
+[modules/hosts/README.md](modules/hosts/README.md).
 
-**Not declarative, done once by hand after the first boot**
-- sign-ins: `sudo tailscale up`, OneDrive (Microsoft window on first
-  mount), `gh auth login`, `glab auth login`, `claude` then `/login`,
-  `codex login`, clauth profiles (`clauth capture`), OmO, Aerion
-  accounts, Teams, WhatsApp
-- Noctalia plugins: the config enables the tailscale plugin, install it
-  from the GUI if it is not fetched
-- Collie (`collie start`, `~/.config/collie/.env`), see
-  [herdr.md](docs/herdr.md)
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| [`modules/`](modules/README.md) | every Nix module, loaded by import-tree |
+| [`modules/hosts.nix`](modules/hosts.nix) | the registry of machines and their users |
+| [`modules/hosts/`](modules/hosts/README.md) | per-machine implementation: hardware, disko, display |
+| [`modules/profiles/`](modules/profiles/README.md) | the `base` and `full` bundles and their building blocks |
+| [`modules/schema/`](modules/schema/README.md) | the `profile` host option |
+| [`modules/users/`](modules/users/README.md) | the `nazuna` user aspect |
+| [`modules/system/`](modules/system/README.md) | boot, memory, power, keyboard, network, system tools |
+| [`modules/nix/`](modules/nix/README.md) | Nix settings, binary caches, unfree |
+| [`modules/shell/`](modules/shell/README.md) | git and the forge CLIs |
+| [`modules/neovim/`](modules/neovim/README.md) | Vimzuna, the Neovim configuration |
+| [`modules/desktop/`](modules/desktop/README.md) | niri, Noctalia, desktop services and apps |
+| [`modules/gaming/`](modules/gaming/README.md) | games and their runtimes |
+| [`modules/homes/`](modules/homes/README.md) | home-manager aspects |
+| [`modules/homes/ai/`](modules/homes/ai/README.md) | coding agents, herdr and the Claude Code tooling |
+| [`modules/homes/shell/`](modules/homes/shell/README.md) | shells and the terminal session |
+| [`modules/homes/tui/`](modules/homes/tui/README.md) | terminal UIs |
+| [`modules/apps/`](modules/apps/README.md) | `den-bootstrap`, `den-warm`, `den-rebuild`, `den-noctalia-save` |
+| [`templates/`](templates/) | templates `den-bootstrap` renders for a new host |
 
 ## Documentation
 
-- [Installing from a USB stick](docs/install.md): preparing the stick and the
-  keys directory, `den-bootstrap`, first boot, day-2 rebuilds
-- [Day-2 rebuilds](docs/den-rebuild.md): what `den-rebuild` does, its
-  arguments and failure modes
-- [Iterating in a VM](docs/vm.md): `nix run .#vm-<host>`, the rebuild and
-  relaunch loop, live niri tweaks, resetting the disk image
-- [Keyboard (AZERTY) in niri](docs/keyboard.md): transposed binds and the
-  Noctalia shortcuts
-- [herdr and its plugins](docs/herdr.md): Nix-owned config, linked
-  plugins and integrations, herdr-projects with OmO, zoetrope, Collie, clauth
-- [OmO standalone](docs/omo.md): the `omo` agent on trial next to herdr,
-  Claude and ChatGPT sign-ins, where its state lives
+- **[AI workflow overview](modules/homes/ai/README.md)**: the agents, herdr
+  and how they fit together
+- [Installing from a USB stick](docs/install.md)
+- [Day-2 rebuilds](docs/den-rebuild.md)
+- [Iterating in a VM](docs/vm.md)
+- [Keyboard (AZERTY) in niri](docs/keyboard.md)
+- [herdr and its plugins](docs/herdr.md)
+- [OmO standalone](docs/omo.md)
 - [Roadmap](docs/ROADMAP.md): architecture and phase status
+
+## Not declarative, done once by hand
+
+After the first boot:
+
+- sign-ins: `sudo tailscale up`, OneDrive (Microsoft window on first mount),
+  `gh auth login`, `glab auth login`, `claude` then `/login`, `codex login`,
+  clauth profiles (`clauth capture`), OmO ([docs/omo.md](docs/omo.md)),
+  Aerion accounts, Teams, WhatsApp
+- Noctalia plugins: the config enables the tailscale plugin; install it from
+  the GUI if it was not fetched
+- Collie: `collie start` and `~/.config/collie/.env`
+  ([docs/herdr.md](docs/herdr.md))

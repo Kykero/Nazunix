@@ -50,7 +50,10 @@ sessions() {
       d=${f%/cmdline}
       cmd=$(tr '\0' ' ' 2>/dev/null < "$f") || continue
       read -ra args <<< "$cmd"
-      [ "${args[0]:-}" = claude ] || continue
+      case "${args[0]:-}" in
+        claude | */omo-claude | omo-claude) ;;
+        *) continue ;;
+      esac
       sid=""
       fork=false
       model="claude"

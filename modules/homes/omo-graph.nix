@@ -5,9 +5,9 @@
 # the list, `a` follows the newest session and switches when a new one
 # starts.
 #
-# omo's children need the extra lookup: omo starts Claude Code with
-# `--setting-sources=` (no user settings), so herdr's hooks never fire in
-# them and herdr never learns their session id. The id is on the child's
+# omo's children need the extra lookup: omo starts Claude Code (as
+# `omo-claude`, omo.nix) with `--setting-sources=` (no user settings), so
+# herdr's hooks never fire in them and herdr never learns their session id. The id is on the child's
 # command line (--session-id, or --resume; a fork takes the newest
 # transcript of its folder), and the transcript is an ordinary Claude Code
 # session.

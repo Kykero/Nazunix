@@ -8,14 +8,35 @@
 #
 # No config is managed. omo runs without ~/.omo/omo.jsonc, its startup
 # migrations rewrite that file and refuse a symlink, and
-# ~/.omo/agent/settings.json is omo's own state. The package wrapper points
-# CLAUDE_CODE_EXECUTABLE at the same llm-agents claude-code as
-# claude-code.nix and sets OMO_SEND_ANONYMOUS_TELEMETRY=0 (PostHog off).
+# ~/.omo/agent/settings.json is omo's own state. The package wrapper sets
+# OMO_SEND_ANONYMOUS_TELEMETRY=0 (PostHog off).
+#
+# omo reports itself to herdr as `pi` (working, done, blocked) from a
+# built-in extension, but herdr also scans the pane's processes: omo's main
+# process is titled `OmO`, which herdr does not know, while the Claude Code
+# it runs for its Claude models is named `claude`, which herdr does. The
+# two disagree, herdr drops omo's report and shows the pane as an idle
+# `claude`. So omo runs its Claude Code through `omo-claude`: the same
+# llm-agents claude-code wrapper, exec'd under that name, which herdr does
+# not recognize, leaving omo's own report in charge.
 { inputs, ... }:
 {
   den.aspects.home-omo.provides.to-users.homeManager =
     { pkgs, ... }:
+    let
+      agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+      omoClaude = pkgs.runCommand "omo-claude" { } ''
+        mkdir -p $out/bin
+        substitute ${agents.claude-code}/bin/claude $out/bin/omo-claude \
+          --replace-fail 'exec -a "claude"' 'exec -a "omo-claude"'
+        chmod +x $out/bin/omo-claude
+      '';
+      omo = pkgs.writeShellScriptBin "omo" ''
+        export CLAUDE_CODE_EXECUTABLE=${omoClaude}/bin/omo-claude
+        exec ${agents.omo-ai}/bin/omo "$@"
+      '';
+    in
     {
-      home.packages = [ inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omo-ai ];
+      home.packages = [ omo ];
     };
 }

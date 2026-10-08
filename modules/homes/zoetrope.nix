@@ -1,8 +1,10 @@
 # zoetrope (`zoe`): draws a coding agent's session as a live flow graph.
-# Its herdr plugin only launches `zoe`; the plugin's install step looks for
-# it on PATH and would otherwise fall back to brew or cargo. The release
-# binaries are static (musl), so they run on NixOS as shipped. Bump
-# `version` and both hashes (the release's .sha512 files) together.
+# Its herdr plugin, linked from the same release's source, only launches
+# `zoe` (and reads herdr's JSON with jq). `prefix+shift+z` opens the graph
+# split beside the focused agent pane and closes it again; the overlay and
+# tab placements stay plugin actions. The release binaries are static
+# (musl), so they run on NixOS as shipped. Bump `version`, both binary
+# hashes (the release's .sha512 files) and the source hash together.
 { ... }:
 {
   den.aspects.home-zoetrope.provides.to-users.homeManager =
@@ -40,8 +42,27 @@
           sourceProvenance = [ pkgs.lib.sourceTypes.binaryNativeCode ];
         };
       };
+      src = pkgs.fetchFromGitHub {
+        owner = "furkankly";
+        repo = "zoetrope";
+        tag = "v${version}";
+        hash = "sha256-jfzbgtZNIbDyHpXqP5QxF9o71zdYKEbY862NIaPHujo=";
+      };
     in
     {
-      home.packages = [ zoe ];
+      home.packages = [
+        zoe
+        pkgs.jq
+      ];
+
+      herdr.plugins."furkankly.zoetrope" = "${src}/herdr-plugin";
+      herdr.settings.keys.command = [
+        {
+          key = "prefix+shift+z";
+          type = "plugin_action";
+          command = "furkankly.zoetrope.open-split";
+          description = "zoetrope: session graph (split)";
+        }
+      ];
     };
 }

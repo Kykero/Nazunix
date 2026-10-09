@@ -41,6 +41,7 @@ desktop apps. One concern per file; most files define one
 | `browser.nix` | `desktop-browser` | Zen Browser through its home-manager module, set as default browser. |
 | `files.nix` | `desktop-files` | Nautilus and gvfs, used by the portal's file chooser; translucent style. |
 | `pdf.nix` | `desktop-pdf` | Zathura with the mupdf plugin for PDFs. |
+| `audio-mixer.nix` | `desktop-audio-mixer` | pwvucontrol, PipeWire volume mixer (per-app levels, mic gain). |
 | `obsidian.nix` | `desktop-obsidian` | Obsidian through `programs.obsidian`, with its CLI. |
 | `mail.nix` | `desktop-mail` | Aerion mail client, with the OAuth helper for Gmail and Microsoft. |
 | `outlook.nix` | `desktop-outlook` | Outlook on the web in a chromeless Chromium window with its own profile. |

@@ -4,6 +4,7 @@
 {
   den.aspects.gaming.includes = with den.aspects.gaming._; [
     steam
+    proton-ge
     protontricks
     prism
     wine

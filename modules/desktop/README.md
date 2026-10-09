@@ -46,6 +46,7 @@ desktop apps. One concern per file; most files define one
 | `outlook.nix` | `desktop-outlook` | Outlook on the web in a chromeless Chromium window with its own profile. |
 | `teams.nix` | `desktop-teams` | teams-for-linux. |
 | `whatsapp.nix` | `desktop-whatsapp` | whatsapp-electron. |
+| `discord.nix` | `desktop-discord` | Official Discord client (unfree). |
 
 ## Noctalia seeds (`noctalia/`)
 
@@ -64,7 +65,7 @@ alone.
 ## How it composes
 
 - `profile-desktop` (`profiles/desktop.nix`) includes every aspect above
-  except the four communication apps, which come through `profile-comms`
+  except the five communication apps, which come through `profile-comms`
   (`profiles/comms.nix`, included by `profile-desktop`). `profile-full`
   includes `profile-desktop`; `-base` entities get none of this.
 - Most user-side config is written as `provides.to-users.homeManager`: a

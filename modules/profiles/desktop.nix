@@ -23,6 +23,7 @@
       den.aspects.desktop-localsend
       den.aspects.desktop-audio
       den.aspects.desktop-audio-mixer
+      den.aspects.desktop-easyeffects
       den.aspects.desktop-power
       den.aspects.desktop-bluetooth
       den.aspects.desktop-noctalia

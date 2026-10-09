@@ -26,6 +26,7 @@ desktop apps. One concern per file; most files define one
 | File | Aspect | What it does |
 | --- | --- | --- |
 | `audio.nix` | `desktop-audio` | PipeWire (ALSA, Pulse) and rtkit; Noctalia needs a running daemon. |
+| `easyeffects.nix` | `desktop-easyeffects` | EasyEffects user service: EQ, compressor, noise suppression on the mic. |
 | `bluetooth.nix` | `desktop-bluetooth` | BlueZ, powered on at boot. |
 | `power.nix` | `desktop-power` | UPower and power-profiles-daemon, which Noctalia talks to. |
 | `onedrive.nix` | `desktop-onedrive` | onedriver FUSE mount at `~/OneDrive` as a user service; token stays in `~/.cache/onedriver`. |

@@ -16,7 +16,7 @@ What Nix provides, and what stays imperative:
 | zoetrope | `zoe`, the plugin linked, its key (`homes/ai/zoetrope.nix`) | nothing |
 | clauth | binary, the plugin linked, its key and sidebar tag (`homes/ai/clauth.nix`) | profiles (`clauth capture`) |
 | herdr-projects | binary, the plugin linked, its key, rows, hooks, skill, default profiles (`homes/ai/herdr-projects.nix`); omo as coordinator (`homes/ai/omo-pi.nix`) | nothing |
-| Collie | `collie` binary (`homes/ai/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
+| Collie | `collie` binary, the plugin linked (`homes/ai/collie.nix`, flake input `collie`) | `.env`, `tailscale serve`, `collie start`, pairing |
 
 ## herdr's config
 
@@ -130,28 +130,35 @@ The bridge listens on `127.0.0.1:8787`, and `tailscale serve` exposes it on
 the tailnet with HTTPS and the caller's identity. Read upstream's
 `docs/security.md` before turning it on.
 
-Collie runs standalone (the `collie` on `PATH`), not as a herdr plugin, and
-still mirrors herdr. Once per machine:
+Collie is linked as the herdr plugin `herdr.collie`, from the package's
+own tree (the release tarball, prebuilt binary included), and mirrors
+herdr. Its actions (`start`, `stop`, `restart`, `url`, `status`,
+`push-keys`, `push-test`, `uninstall`) run that same binary; the `collie`
+on `PATH` covers the verbs with no action (`pair`, `qr`, `logs`, `doctor`).
+Both read the plugin's config dir, `~/.config/herdr/plugins/config/herdr.collie/`
+(`herdr plugin config-dir herdr.collie`). Once per machine:
 
 1. Enable HTTPS for the tailnet (Tailscale admin console, DNS page).
 2. Let the user drive `tailscale serve` without sudo:
    `sudo tailscale set --operator=$USER`.
-3. Create `~/.config/collie/.env` with `COLLIE_TRUSTED_USER=<your tailnet
-   login>`. This file is private and never goes in the repo. Without it, any
-   device on the tailnet gets write access, and the bridge says so.
-4. With herdr running: `collie start`. It writes the `systemd --user` unit
-   and the serve mapping, then prints the URL.
+3. Create `.env` in the plugin's config dir with
+   `COLLIE_TRUSTED_USER=<your tailnet login>`. This file is private and
+   never goes in the repo. Without it, any device on the tailnet gets
+   write access, and the bridge says so.
+4. With herdr running: `herdr plugin action invoke start --plugin herdr.collie`
+   (or `collie start`). It writes the `systemd --user` unit and the serve
+   mapping, then prints the URL.
 5. `collie pair` on the machine, then scan the QR code with the phone and add
    the page to the home screen. Pairing is the write credential.
 
-`collie status` and `collie doctor` check the install. `collie push-keys`
-then `collie restart` turns on push notifications.
+`collie status` and `collie doctor` check the install. The `push-keys`
+action then `restart` turns on push notifications.
 
 **After a rebuild that changes Collie** (a `lock.yml` run), run
-`collie restart`. `collie start` bakes the store path into the systemd unit,
+`collie restart`. `start` bakes the store path into the systemd unit,
 so the service keeps running the old version until then, and it breaks
-once that path is garbage-collected. `collie update` declines on this
-install on purpose.
+once that path is garbage-collected. `collie update` (and the `update`
+action) declines on this install on purpose.
 
 Remove: `collie uninstall` (stops the service, removes the unit and the
 serve mapping). State stays in `~/.local/state/collie/`.

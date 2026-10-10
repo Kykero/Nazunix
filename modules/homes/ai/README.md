@@ -29,7 +29,7 @@ during bootstrap. Most packages come from the `llm-agents` flake input
 | `omo.nix` | `home-omo` | OmO (`omo`), with its Claude Code renamed `omo-claude` |
 | `omo-pi.nix` | `home-omo-pi` | a `pi` that execs `omo`, so OmO is herdr-projects' coordinator |
 | `omo-graph.nix`, `omo-graph.sh` | `home-omo-graph` | `omo-graph`: pick any live agent session and watch it in `zoe` |
-| `collie.nix` | `home-collie` | Collie, the phone web app for the agents in herdr |
+| `collie.nix` | `home-collie` | Collie, the phone web app for the agents in herdr, and its herdr plugin |
 
 ## How the pieces fit
 
@@ -49,7 +49,7 @@ during bootstrap. Most packages come from the `llm-agents` flake input
 - **herdr as the hub.** Any aspect can add to `herdr.settings` (becomes
   herdr's `config.toml`, Nix-owned, checked at build time) and
   `herdr.plugins` (linked with `herdr plugin link` on every switch). The
-  plugins linked this way are zoetrope, clauth and herdr-projects. Keys:
+  plugins linked this way are zoetrope, clauth, herdr-projects and Collie. Keys:
   `prefix+a` clauth, `prefix+shift+z` zoetrope, `prefix+shift+j`
   herdr-projects.
 - **Accounts.** clauth turns each logged-in Claude account into a profile,
@@ -106,11 +106,11 @@ Done once per machine, by hand, and never in the repo:
 - In `omo`: `/login anthropic-subscription` (not `/login anthropic`, billed
   per token), `/login chatgpt-subscription`, `/model`.
 - Signing in to the desktop apps.
-- Collie: tailnet HTTPS, `~/.config/collie/.env`, `collie start`,
-  `collie pair`.
+- Collie: tailnet HTTPS, `.env` in `herdr plugin config-dir herdr.collie`,
+  its `start` action, `collie pair`.
 
 Tokens and state stay in `~/.claude`, `~/.codex`, `~/.clauth`, `~/.omo`,
-`~/.herdr-projects` and `~/.config/collie`.
+`~/.herdr-projects` and `~/.config/herdr/plugins/config/herdr.collie`.
 
 ## Details
 

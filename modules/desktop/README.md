@@ -13,7 +13,7 @@ desktop apps. One concern per file; most files define one
 | `niri-binds.nix` | `desktop-niri-binds` | niri's default binds transposed to AZERTY. |
 | `niri-window-rules.nix` | `desktop-niri-window-rules` | Window rules (rounded, clipped corners). |
 | `niri-workspaces.nix` | `desktop-niri-workspaces` | Two named workspaces that persist from session start. |
-| `niri-focus-follows-mouse.nix` | `desktop-niri-focus-follows-mouse` | Focus follows the pointer. |
+| `niri-focus-follows-mouse.nix` | `desktop-niri-focus-follows-mouse` | Focus follows the pointer, without scrolling the view. |
 | `niri-blur.nix` | `desktop-niri-blur` | Background blur behind windows and Noctalia's surfaces, appended as raw KDL. |
 | `niri-xwayland.nix` | `desktop-niri-xwayland` | xwayland-satellite in `PATH` so niri can start X11 clients. |
 | `noctalia.nix` | `desktop-noctalia` | Noctalia shell (bar, launcher, notifications, lock screen); seeds its config once. |

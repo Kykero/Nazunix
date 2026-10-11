@@ -5,12 +5,14 @@ per file under `gaming.provides`.
 
 | File | Aspect | What it does |
 | --- | --- | --- |
-| `gaming.nix` | `gaming` | The full bundle: includes `steam`, `proton-ge`, `protontricks`, `prism` and `wine`. |
+| `gaming.nix` | `gaming` | The full bundle: includes `steam`, `proton-ge`, `protontricks`, `prism`, `wine`, `sunshine` and `moonlight`. |
 | `steam.nix` | `gaming._.steam` | `programs.steam` at the NixOS level (32-bit graphics, controller udev rules, Remote Play firewall ports). |
 | `proton-ge.nix` | `gaming._.proton-ge` | GE-Proton as an extra Steam compat tool, for Wine's Wayland driver (keyboard layout switching in games). |
 | `protontricks.nix` | `gaming._.protontricks` | winetricks for the Wine prefixes of Proton games (`programs.steam.protontricks`). |
 | `prism.nix` | `gaming._.prism` | Prism Launcher for Minecraft, in the users' `home.packages`. |
 | `wine.nix` | `gaming._.wine` | wine-tkg from the nix-gaming input, in the users' `home.packages`. |
+| `sunshine.nix` | `gaming._.sunshine` | Sunshine stream host (`services.sunshine`): KMS capture via `capSysAdmin`, firewall ports, Avahi discovery; configured and paired from its web UI on port 47990. |
+| `moonlight.nix` | `gaming._.moonlight` | Moonlight client (`moonlight-qt`), in the users' `home.packages`. |
 
 ## Notes
 
@@ -19,4 +21,6 @@ per file under `gaming.provides`.
   `gaming` bundle, `dazai` only `gaming._.steam` (8GB RAM).
 - wine-tkg comes prebuilt from the nix-gaming cache (`nix/caches.nix`).
 - Steam is unfree, allowed globally by `nix/unfree.nix`.
+- Sunshine runs as a user service tied to `graphical-session.target`; the
+  first launch asks for an admin account at `https://localhost:47990`.
 - X11 games under niri rely on `desktop/niri-xwayland.nix`.

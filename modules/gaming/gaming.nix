@@ -8,5 +8,7 @@
     protontricks
     prism
     wine
+    sunshine
+    moonlight
   ];
 }

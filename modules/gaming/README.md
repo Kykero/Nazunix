@@ -21,6 +21,7 @@ per file under `gaming.provides`.
   `gaming` bundle, `dazai` only `gaming._.steam` (8GB RAM).
 - wine-tkg comes prebuilt from the nix-gaming cache (`nix/caches.nix`).
 - Steam is unfree, allowed globally by `nix/unfree.nix`.
-- Sunshine runs as a user service tied to `graphical-session.target`; the
+- Sunshine is a user service started on demand
+  (`systemctl --user start sunshine`), not with the session; the
   first launch asks for an admin account at `https://localhost:47990`.
 - X11 games under niri rely on `desktop/niri-xwayland.nix`.

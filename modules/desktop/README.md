@@ -49,6 +49,7 @@ desktop apps. One concern per file; most files define one
 | `teams.nix` | `desktop-teams` | teams-for-linux. |
 | `whatsapp.nix` | `desktop-whatsapp` | whatsapp-electron. |
 | `discord.nix` | `desktop-discord` | Official Discord client (unfree). |
+| `proton.nix` | `desktop-proton` | Proton Calendar as a Chromium web app (Proton profile shared by future apps). |
 
 ## Noctalia seeds (`noctalia/`)
 

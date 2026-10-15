@@ -19,6 +19,7 @@
       den.aspects.desktop-gtk-theme
       den.aspects.profile-comms
       den.aspects.desktop-obsidian
+      den.aspects.desktop-proton
       den.aspects.desktop-onedrive
       den.aspects.desktop-localsend
       den.aspects.desktop-audio

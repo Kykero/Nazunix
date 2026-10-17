@@ -41,7 +41,10 @@ desktop apps. One concern per file; most files define one
 | `terminal.nix` | `desktop-terminal` | Ghostty, single GTK instance, translucent, colours from Noctalia's template. |
 | `browser.nix` | `desktop-browser` | Zen Browser through its home-manager module, set as default browser. |
 | `files.nix` | `desktop-files` | Nautilus and gvfs, used by the portal's file chooser; translucent style. |
-| `pdf.nix` | `desktop-pdf` | Zathura with the mupdf plugin for PDFs. |
+| `pdf.nix` | `desktop-pdf` | pdfcraft as the default PDF viewer; Zathura for Yazi, which offers both on `O`. |
+| `craftapps.nix` | `desktop-craftapps` | ArtCraft's twelve Crafting Apps (pdfcraft, photocraft...) with `/usr/share/fonts` linked. |
+| `text-editor.nix` | `desktop-text-editor` | Text files open in Neovim inside a Ghostty window. |
+| `images.nix` | `desktop-images` | Loupe (GNOME Image Viewer) as the default for images. |
 | `audio-mixer.nix` | `desktop-audio-mixer` | pwvucontrol, PipeWire volume mixer (per-app levels, mic gain). |
 | `obsidian.nix` | `desktop-obsidian` | Obsidian through `programs.obsidian`, with its CLI. |
 | `mail.nix` | `desktop-mail` | Aerion mail client, with the OAuth helper for Gmail and Microsoft. |

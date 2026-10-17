@@ -48,6 +48,12 @@
     # nix-gaming: wine-tkg and friends. No follows: its cache only hits with
     # its own pinned nixpkgs, and Wine is a long build.
     nix-gaming.url = "github:fufexan/nix-gaming";
+    # ArtCraft's Crafting Apps (pdfcraft, photocraft...): repackaged upstream
+    # release binaries, so following nixpkgs costs no build
+    nix-craftapps = {
+      url = "github:olafkfreund/nix-craftapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

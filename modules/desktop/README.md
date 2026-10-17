@@ -44,7 +44,7 @@ desktop apps. One concern per file; most files define one
 | `pdf.nix` | `desktop-pdf` | pdfcraft as the default PDF viewer; Zathura for Yazi, which offers both on `O`. |
 | `craftapps.nix` | `desktop-craftapps` | ArtCraft's twelve Crafting Apps (pdfcraft, photocraft...) with `/usr/share/fonts` linked. |
 | `text-editor.nix` | `desktop-text-editor` | Text files open in Neovim inside a Ghostty window. |
-| `images.nix` | `desktop-images` | LightCraft as the default for photos (png, jpeg, tiff, webp, raw). |
+| `images.nix` | `desktop-images` | swayimg as the default image viewer, LightCraft second and for raw files. |
 | `audio-mixer.nix` | `desktop-audio-mixer` | pwvucontrol, PipeWire volume mixer (per-app levels, mic gain). |
 | `obsidian.nix` | `desktop-obsidian` | Obsidian through `programs.obsidian`, with its CLI. |
 | `mail.nix` | `desktop-mail` | Aerion mail client, with the OAuth helper for Gmail and Microsoft. |

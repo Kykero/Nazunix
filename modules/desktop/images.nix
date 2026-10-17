@@ -1,31 +1,31 @@
-# Loupe (GNOME Image Viewer), a GTK4/libadwaita app like Nautilus, opens
-# images from Nautilus and xdg-open.
+# LightCraft (craftapps.nix) opens images from Nautilus and xdg-open: the
+# types its desktop entry claims, raw camera files included. GIF, SVG,
+# AVIF and HEIC are not among them and keep their previous handler.
 { ... }:
 {
   den.aspects.desktop-images.provides.to-users.homeManager =
-    { pkgs, ... }:
     let
       types = [
         "image/png"
         "image/jpeg"
-        "image/gif"
-        "image/webp"
-        "image/bmp"
         "image/tiff"
-        "image/svg+xml"
-        "image/avif"
-        "image/heic"
-        "image/jxl"
-        "image/x-icon"
+        "image/webp"
+        "image/x-adobe-dng"
+        "image/x-sony-arw"
+        "image/x-canon-cr2"
+        "image/x-canon-cr3"
+        "image/x-nikon-nef"
+        "image/x-fuji-raf"
+        "image/x-olympus-orf"
+        "image/x-panasonic-rw2"
+        "image/x-pentax-pef"
       ];
     in
     {
-      home.packages = [ pkgs.loupe ];
-
       xdg.mimeApps.defaultApplications = builtins.listToAttrs (
         map (type: {
           name = type;
-          value = "org.gnome.Loupe.desktop";
+          value = "ai.storyteller.lightcraft.desktop";
         }) types
       );
     };

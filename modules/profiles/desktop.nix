@@ -19,6 +19,7 @@
       den.aspects.desktop-craftapps
       den.aspects.desktop-text-editor
       den.aspects.desktop-images
+      den.aspects.desktop-screen-mirror
       den.aspects.desktop-gtk-theme
       den.aspects.profile-comms
       den.aspects.desktop-obsidian

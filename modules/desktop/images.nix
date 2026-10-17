@@ -1,5 +1,10 @@
 # Images open from Nautilus and xdg-open in gThumb: the arrow keys walk
 # through the folder's pictures, and it crops, rotates and flips in place.
+# gThumb's viewer moves between files with Page_Up/Page_Down and scrolls
+# with the arrows; shortcuts.xml, read after the extensions register their
+# shortcuts, swaps that so Left/Right walk the folder. Only the listed
+# actions change. The file is read-only, so the shortcuts page of gThumb's
+# preferences cannot save over it.
 # LightCraft (craftapps.nix) comes second for the types its desktop entry
 # claims, and takes the raw camera files gThumb's entry does not.
 { ... }:
@@ -41,6 +46,16 @@
     in
     {
       home.packages = [ pkgs.gthumb ];
+
+      xdg.configFile."gthumb/shortcuts.xml".text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <shortcuts>
+          <shortcut action="show-previous-image" accelerator="Left"/>
+          <shortcut action="show-next-image" accelerator="Right"/>
+          <shortcut action="scroll-step-left" accelerator=""/>
+          <shortcut action="scroll-step-right" accelerator=""/>
+        </shortcuts>
+      '';
 
       xdg.mimeApps.defaultApplications = lib.genAttrs (lib.unique (gthumb ++ lightcraft)) handlers;
     };

@@ -1,14 +1,13 @@
-# Images open from Nautilus and xdg-open in swayimg, a light Wayland-native
-# viewer that covers the common formats (GIF, SVG, AVIF, HEIC and JXL
-# included). LightCraft (craftapps.nix) comes second for the types its
-# desktop entry claims, raw camera files included, and takes the raw files
-# swayimg cannot read.
+# Images open from Nautilus and xdg-open in gThumb: the arrow keys walk
+# through the folder's pictures, and it crops, rotates and flips in place.
+# LightCraft (craftapps.nix) comes second for the types its desktop entry
+# claims, and takes the raw camera files gThumb's entry does not.
 { ... }:
 {
   den.aspects.desktop-images.provides.to-users.homeManager =
     { lib, pkgs, ... }:
     let
-      swayimg = [
+      gthumb = [
         "image/png"
         "image/jpeg"
         "image/gif"
@@ -16,10 +15,9 @@
         "image/bmp"
         "image/tiff"
         "image/svg+xml"
-        "image/avif"
-        "image/heif"
         "image/jxl"
         "image/x-tga"
+        "image/x-ico"
       ];
       lightcraft = [
         "image/png"
@@ -38,12 +36,12 @@
       ];
       handlers =
         type:
-        lib.optional (lib.elem type swayimg) "swayimg.desktop"
+        lib.optional (lib.elem type gthumb) "org.gnome.gThumb.desktop"
         ++ lib.optional (lib.elem type lightcraft) "ai.storyteller.lightcraft.desktop";
     in
     {
-      home.packages = [ pkgs.swayimg ];
+      home.packages = [ pkgs.gthumb ];
 
-      xdg.mimeApps.defaultApplications = lib.genAttrs (lib.unique (swayimg ++ lightcraft)) handlers;
+      xdg.mimeApps.defaultApplications = lib.genAttrs (lib.unique (gthumb ++ lightcraft)) handlers;
     };
 }

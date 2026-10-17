@@ -1,7 +1,7 @@
-# ArtCraft's twelve Crafting Apps (pdfcraft, photocraft, vectorcraft...)
-# through nix-craftapps' NixOS module. Its linkFonts (on by default) points
-# /usr/share/fonts at the system fonts: the apps read fonts only there.
-# pdf.nix makes pdfcraft the default PDF viewer.
+# Two of ArtCraft's Crafting Apps through nix-craftapps' NixOS module:
+# pdfcraft, the default PDF viewer (pdf.nix), and lightcraft, the photo
+# library and raw developer (images.nix). Its linkFonts (on by default)
+# points /usr/share/fonts at the system fonts: the apps read fonts only there.
 { inputs, ... }:
 {
   den.aspects.desktop-craftapps.nixos = {
@@ -9,7 +9,8 @@
 
     programs.craftapps = {
       enable = true;
-      enableAll = true;
+      apps.pdfcraft.enable = true;
+      apps.lightcraft.enable = true;
     };
   };
 }

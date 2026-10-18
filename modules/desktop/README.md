@@ -43,6 +43,7 @@ desktop apps. One concern per file; most files define one
 | `files.nix` | `desktop-files` | Nautilus and gvfs, used by the portal's file chooser; translucent style. |
 | `pdf.nix` | `desktop-pdf` | pdfcraft as the default PDF viewer; Zathura for Yazi, which offers both on `O`. |
 | `craftapps.nix` | `desktop-craftapps` | pdfcraft and lightcraft from ArtCraft's Crafting Apps, with `/usr/share/fonts` linked. |
+| `pdfcraft-xwayland.nix` | `desktop-craftapps` | pdfcraft under XWayland until upstream #991 (Ctrl stuck after Ctrl+wheel on Wayland) is fixed. |
 | `text-editor.nix` | `desktop-text-editor` | Text files open in Neovim inside a Ghostty window. |
 | `images.nix` | `desktop-images` | gThumb as the default image viewer (Left/Right walk the folder, crop, rotate); LightCraft second and for raw files. |
 | `screen-mirror.nix` | `desktop-screen-mirror` | Mod+P mirrors the focused output onto the other one with wl-mirror (projectors). |

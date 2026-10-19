@@ -41,11 +41,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791382844,
-        "narHash": "sha256-HEk3gEFLGzUNbayZSO8yZMt4MufqP1wv6n4aLU0WXbM=",
+        "lastModified": 1792324093,
+        "narHash": "sha256-zSc0wliZxjknBZA5rnSNTAVuWoRVpca/ZV9yoVQDl3c=",
         "owner": "AltanS",
         "repo": "collie",
-        "rev": "c4d94292ec9e10074440248c28d109bdc7dc1310",
+        "rev": "afed99bc8d5f9ca29a12561f975ca0e72c5733a3",
         "type": "github"
       },
       "original": {

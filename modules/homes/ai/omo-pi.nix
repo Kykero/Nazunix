@@ -11,6 +11,12 @@
 # (after OMO_ and SENPI_CODING_AGENT_DIR), and it points at omo's own
 # default, ~/.omo/agent, so omo itself sees no change.
 #
+# Collie (collie.nix) reads pi's session logs, in omo's identical format,
+# from $PI_CODING_AGENT_DIR/sessions, else ~/.pi and ~/.omp. Its systemd
+# unit is written by `collie start` and never sees the session variable, so
+# a drop-in hands it the same value; the unit stays Collie's to rewrite on
+# update.
+#
 # The standing rule below is global, for every project: Claude Code and
 # omo both read ~/.claude/rules/, and the rule only applies to the agent
 # acting as a herdr-projects coordinator.
@@ -18,8 +24,16 @@
 {
   den.aspects.home-omo-pi.provides.to-users.homeManager =
     { config, pkgs, ... }:
+    let
+      agentDir = "${config.home.homeDirectory}/.omo/agent";
+    in
     {
-      home.sessionVariables.PI_CODING_AGENT_DIR = "${config.home.homeDirectory}/.omo/agent";
+      home.sessionVariables.PI_CODING_AGENT_DIR = agentDir;
+
+      xdg.configFile."systemd/user/collie.service.d/omo.conf".text = ''
+        [Service]
+        Environment=PI_CODING_AGENT_DIR=${agentDir}
+      '';
 
       home.packages = [
         (pkgs.writeShellScriptBin "pi" ''

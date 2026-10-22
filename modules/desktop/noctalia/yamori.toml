@@ -15,8 +15,14 @@ position = "right"
 radius = 0
 shadow = true
 start = [ "control-center", "workspaces", "tray" ]
-thickness = 40
+thickness = 50
 widget_spacing = 10
+
+[calendar]
+enabled = true
+
+[control_center.calendar]
+show_events_card = false
 
 [desktop_widgets]
 enabled = true
@@ -84,13 +90,13 @@ widget_order = [ "weather_main", "clock_main", "date_main" ]
 [dock]
 auto_hide = false
 background_opacity = 0.5
-enabled = true
+enabled = false
 icon_size = 40
 launcher_icon = "grid-dots"
 launcher_position = "end"
 magnification = false
 margin_edge = 8
-pinned = [ "zen-beta", "com.mitchellh.ghostty" ]
+pinned = [ "com.mitchellh.ghostty", "zen-beta" ]
 position = "top"
 radius = 18
 reserve_space = false
@@ -264,6 +270,7 @@ hide_when_no_unread = false
 glyph = "shutdown"
 
 [widget.status]
+show_counts = false
 type = "davemhammer/tailscale:status"
 
 [widget.tray]

@@ -14,7 +14,7 @@
       opener = {
         zathura = [
           {
-            run = ''zathura "$@"'';
+            run = "zathura %s";
             orphan = true;
             desc = "Zathura";
             for = "unix";
@@ -22,7 +22,7 @@
         ];
         pdfcraft = [
           {
-            run = ''pdfcraft "$@"'';
+            run = "pdfcraft %s";
             orphan = true;
             desc = "PdfCraft";
             for = "unix";

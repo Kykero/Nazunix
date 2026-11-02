@@ -2,8 +2,11 @@
 # (fs/fs.go, StatFs -> graph.GetDrive), about half a second each. Nautilus
 # statfs's ~/OneDrive several times on its main thread whenever a window
 # opens or closes (sidebar bookmark, home listing), so it froze for seconds.
-# The quota is cached for a minute here, and a stale one is kept when a
-# refresh fails (offline). Built locally, not substituted.
+# The quota is cached for a minute here. Once a quota is known, statfs
+# never waits on Graph again: a stale one is answered at once and
+# refreshed in the background, one request at a time, so going offline
+# (each request then hangs for the HTTP timeout, a minute) cannot freeze
+# Nautilus either. Built locally, not substituted.
 { ... }:
 {
   den.aspects.desktop-onedrive.nixos.nixpkgs.overlays = [
@@ -23,26 +26,37 @@
           )
 
           var (
-          	driveCacheM  sync.Mutex
-          	driveCache   graph.Drive
-          	driveCacheAt time.Time
+          	driveCacheM       sync.Mutex
+          	driveCache        graph.Drive
+          	driveCacheAt      time.Time
+          	driveCacheRefresh bool
           )
 
           func cachedDrive(auth *graph.Auth) (graph.Drive, error) {
           	driveCacheM.Lock()
           	defer driveCacheM.Unlock()
-          	if time.Since(driveCacheAt) < time.Minute {
-          		return driveCache, nil
-          	}
-          	drive, err := graph.GetDrive(auth)
-          	if err != nil {
-          		if driveCacheAt.IsZero() {
-          			return drive, err
+          	if driveCacheAt.IsZero() {
+          		drive, err := graph.GetDrive(auth)
+          		if err == nil {
+          			driveCache, driveCacheAt = drive, time.Now()
           		}
-          		return driveCache, nil
+          		return drive, err
           	}
-          	driveCache, driveCacheAt = drive, time.Now()
-          	return drive, nil
+          	if time.Since(driveCacheAt) >= time.Minute && !driveCacheRefresh {
+          		driveCacheRefresh = true
+          		go refreshDrive(auth)
+          	}
+          	return driveCache, nil
+          }
+
+          func refreshDrive(auth *graph.Auth) {
+          	drive, err := graph.GetDrive(auth)
+          	driveCacheM.Lock()
+          	defer driveCacheM.Unlock()
+          	driveCacheRefresh = false
+          	if err == nil {
+          		driveCache, driveCacheAt = drive, time.Now()
+          	}
           }
           EOF
         '';

@@ -4,9 +4,6 @@
   den.aspects.boot-grub-efi.includes = [ den.aspects.grub-theme ];
 
   den.aspects.boot-grub-efi.nixos = {
-    # systemd in the initrd: clean boot flow, prerequisite for TPM2 unlock later
-    boot.initrd.systemd.enable = true;
-
     boot.loader = {
       efi.canTouchEfiVariables = true;
       grub = {

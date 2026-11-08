@@ -5,7 +5,7 @@ system tools. Each file defines one den aspect with a `nixos` class.
 
 | File | Aspect | What it does |
 | --- | --- | --- |
-| `boot-grub-efi.nix` | `boot-grub-efi` | GRUB on EFI only (`nodev`), systemd in the initrd, 20 generations in the menu, monthly btrfs scrub of `/`. Includes `grub-theme`. |
+| `boot-grub-efi.nix` | `boot-grub-efi` | GRUB on EFI only (`nodev`), 20 generations in the menu, monthly btrfs scrub of `/`. Includes `grub-theme`. |
 | `grub-theme.nix` | `grub-theme` | Elegant GRUB theme (mountain / float / left / light, 1080p) built from a pinned upstream source, with the NixOS logo. |
 | `windows-dualboot.nix` | `windows-dualboot` | Explicit GRUB entry for Windows 11, found by its `bootmgfw.efi` file (no os-prober, no UUID), hardware clock in local time. |
 | `zram.nix` | `zram` | zstd zram swap at 50% of RAM, swappiness tuned for zram, `/tmp` not on tmpfs. |

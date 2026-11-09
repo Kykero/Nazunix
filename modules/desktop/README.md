@@ -50,7 +50,7 @@ desktop apps. One concern per file; most files define one
 | `audio-mixer.nix` | `desktop-audio-mixer` | pwvucontrol, PipeWire volume mixer (per-app levels, mic gain). |
 | `obsidian.nix` | `desktop-obsidian` | Obsidian through `programs.obsidian`, with its CLI. |
 | `mail.nix` | `desktop-mail` | Aerion mail client, with the OAuth helper for Gmail and Microsoft. |
-| `outlook.nix` | `desktop-outlook` | Outlook on the web in a chromeless Chromium window with its own profile. |
+| `outlook.nix` | `desktop-outlook` | Outlook on the web in a chromeless Chromium window with its own profile; links open in the default browser. |
 | `teams.nix` | `desktop-teams` | teams-for-linux. |
 | `whatsapp.nix` | `desktop-whatsapp` | whatsapp-electron. |
 | `discord.nix` | `desktop-discord` | Official Discord client (unfree). |

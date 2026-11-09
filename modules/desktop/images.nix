@@ -41,7 +41,7 @@
       ];
       handlers =
         type:
-        lib.optional (lib.elem type gthumb) "org.gnome.gThumb.desktop"
+        lib.optional (lib.elem type gthumb) "org.gnome.gthumb.desktop"
         ++ lib.optional (lib.elem type lightcraft) "ai.storyteller.lightcraft.desktop";
     in
     {

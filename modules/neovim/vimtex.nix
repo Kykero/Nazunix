@@ -1,7 +1,13 @@
 # VimTeX + texlive-full + zathura SyncTeX. Not part of vimzuna.nvim
-# (texlive-full is several GB): add it to profile.nix's includes to get it.
-{ ... }:
+# (texlive-full is several GB): `neovim-tex` forwards it into nvf on the
+# hosts that include it (yamori only, modules/hosts/yamori/yamori.nix).
+{ vimzuna, vimzunaForward, ... }:
 {
+  den.aspects.neovim-tex.includes = [
+    vimzunaForward
+    vimzuna.vimtex
+  ];
+
   vimzuna.vimtex.vim =
     { pkgs, ... }:
     {

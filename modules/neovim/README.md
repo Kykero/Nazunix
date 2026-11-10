@@ -16,6 +16,9 @@ installed on every host by the base profile.
   module, enables `programs.nvf` as the default editor, and forwards the
   `vim` class of `vimzuna.nvim` into `programs.nvf.settings.vim`
   (`den.batteries.forward`).
+- The forwarder only reads the tree of the aspect that includes it; it is
+  also exposed as the `vimzunaForward` module argument, so an aspect such
+  as `den.aspects.neovim-tex` can add vimzuna aspects on some hosts only.
 - `ide.nix` adds to the same `neovim` aspect the `vimzuna` command and
   includes `home-tmux` ([`../homes/shell/`](../homes/shell/README.md)).
 
@@ -24,7 +27,7 @@ installed on every host by the base profile.
 | File | Defines | What it does |
 | --- | --- | --- |
 | `namespace.nix` | `vimzuna` namespace | the local namespace holding the editor aspects |
-| `neovim.nix` | `den.aspects.neovim` | nvf on NixOS, `vim` class forwarded into `programs.nvf` |
+| `neovim.nix` | `den.aspects.neovim`, `vimzunaForward` | nvf on NixOS, `vim` class forwarded into `programs.nvf` |
 | `ide.nix` | `den.aspects.neovim` | `vimzuna`: attach or create the `vimzuna` tmux session with nvim in its `nvim` window |
 | `profile.nix` | `vimzuna.nvim` | every vimzuna aspect but `vimtex` |
 | `core.nix` | `vimzuna.core` | vi/vim aliases, Space leader, tokyonight moon, options, fr/en spellcheck, lualine, which-key, Wayland clipboard |
@@ -37,12 +40,13 @@ installed on every host by the base profile.
 | `autopairs.nix` | `vimzuna.autopairs` | nvim-autopairs |
 | `lsp.nix` | `vimzuna.lsp` | LSP, blink-cmp, format on save, trouble, lightbulb, `<leader>lf` format |
 | `languages.nix` | `vimzuna.languages` | treesitter, formatters and LSPs for Nix (nixd, nixfmt), Markdown, Bash, Python (basedpyright, debugpy), JSON, Java |
-| `vimtex.nix` | `vimzuna.vimtex` | VimTeX, texlive-full, zathura SyncTeX; not installed |
+| `vimtex.nix` | `vimzuna.vimtex`, `den.aspects.neovim-tex` | VimTeX, texlive-full, zathura SyncTeX; on `yamori` only, through `neovim-tex` |
 
 ## Notes
 
 - `vimtex` is left out of `vimzuna.nvim` because texlive-full is several
-  GB; add it to `profile.nix`'s includes to get it.
+  GB; a host gets it by including `den.aspects.neovim-tex` (today only
+  `yamori`, in `modules/hosts/yamori/yamori.nix`).
 - claudecode.nvim does not provide the `claude` CLI: that comes with the
   full profile, see [`../homes/ai/`](../homes/ai/README.md). Inside tmux,
   Claude opens in a new pane on the right (external terminal provider);

@@ -32,7 +32,8 @@ same disk layout and kernel modules.
 | `display.nix`, `mouse.nix` | niri output and pointer settings, set on `<machine>` only through `provides.to-users.homeManager`; the `-base` entity has no niri |
 
 Current machines: `dazai` (laptop: zram, laptop power, Steam only) and
-`yamori` (desktop and builder: full `gaming` bundle, no zram).
+`yamori` (desktop and builder: full `gaming` bundle, VimTeX with
+texlive-full through `neovim-tex`, no zram).
 
 ## Adding a machine
 

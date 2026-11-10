@@ -11,6 +11,7 @@
   den.aspects.yamori.includes = [
     den.aspects.yamori-hw
     den.aspects.gaming
+    den.aspects.neovim-tex
   ];
   den.aspects.yamori-base.includes = [ den.aspects.yamori-hw ];
 }

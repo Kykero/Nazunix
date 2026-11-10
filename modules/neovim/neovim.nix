@@ -1,6 +1,9 @@
 # Neovim on every host and profile, built by nvf's NixOS module from the
 # vimzuna namespace (namespace.nix). The `vim` class of vimzuna.nvim and
 # everything it includes is forwarded into programs.nvf.settings.vim.
+# The forwarder only reads the tree of the aspect that includes it, so it
+# is also exposed as the `vimzunaForward` module argument for aspects that
+# add editor concerns on some hosts only (vimtex.nix).
 {
   den,
   inputs,
@@ -26,6 +29,8 @@ let
     };
 in
 {
+  _module.args.vimzunaForward = vimClass;
+
   den.aspects.neovim = {
     includes = [
       vimClass

@@ -1,4 +1,5 @@
-# The editor as installed: every vimzuna aspect but vimtex (vimtex.nix).
+# The editor as installed: every vimzuna aspect but vimtex (vimtex.nix,
+# added per host through den.aspects.neovim-tex).
 { vimzuna, ... }:
 {
   vimzuna.nvim.includes = with vimzuna; [

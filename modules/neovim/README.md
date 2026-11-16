@@ -30,7 +30,7 @@ installed on every host by the base profile.
 | `neovim.nix` | `den.aspects.neovim`, `vimzunaForward` | nvf on NixOS, `vim` class forwarded into `programs.nvf` |
 | `ide.nix` | `den.aspects.neovim` | `vimzuna`: attach or create the `vimzuna` tmux session with nvim in its `nvim` window |
 | `profile.nix` | `vimzuna.nvim` | every vimzuna aspect but `vimtex` |
-| `core.nix` | `vimzuna.core` | vi/vim aliases, Space leader, tokyonight moon, options, fr/en spellcheck, lualine, which-key, Wayland clipboard |
+| `core.nix` | `vimzuna.core` | vi/vim aliases, Space leader, tokyonight moon, options, fr/en spellcheck, lualine, which-key, system clipboard (Wayland, `unnamedplus`) |
 | `python.nix` | `vimzuna.python` | Python 3 provider with pynvim |
 | `snacks.nix` | `vimzuna.snacks` | snacks.nvim: dashboard, notifier, lazygit (`<leader>gg`), GitHub issue/PR pickers (`<leader>gi/gI/gp/gP`) |
 | `navigation.nix` | `vimzuna.navigation` | smart-splits.nvim: Ctrl+hjkl move, Alt+hjkl resize across splits and tmux panes |

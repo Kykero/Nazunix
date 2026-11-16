@@ -42,9 +42,11 @@
 
       mini.icons.enable = true;
 
-      # wl-copy/wl-paste for the "+ and "* registers (Wayland)
+      # Share the system clipboard: wl-copy/wl-paste back the "+ register
+      # (Wayland), and unnamedplus routes plain y/d/c/p through it.
       clipboard = {
         enable = true;
+        registers = "unnamedplus";
         providers.wl-copy.enable = true;
       };
     };

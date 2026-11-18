@@ -7,6 +7,7 @@
     proton-ge
     protontricks
     prism
+    me3
     wine
     sunshine
     moonlight

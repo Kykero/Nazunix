@@ -10,6 +10,7 @@
       den.aspects.devenv
       den.aspects.direnv
       den.aspects.tailscale
+      den.aspects.ssh
       den.aspects.shell-git
       den.aspects.shell-gh
       den.aspects.shell-glab
@@ -32,7 +33,6 @@
 
         time.timeZone = "Europe/Paris";
 
-        services.openssh.enable = true;
         networking.networkmanager.enable = true;
       };
   };

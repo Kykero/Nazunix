@@ -6,7 +6,7 @@ option picks `profile-base` or `profile-full` through the pointcut in
 
 | File | Aspect | Includes |
 |---|---|---|
-| `base.nix` | `profile-base` | Nix settings and caches, nh, AZERTY keyboard, Neovim, devenv, direnv, Tailscale, git/gh/glab, the TUI tools yazi, television, lazygit, bat and search; plus vim, btop, the Paris time zone, OpenSSH and NetworkManager |
+| `base.nix` | `profile-base` | Nix settings and caches, nh, AZERTY keyboard, Neovim, devenv, direnv, Tailscale, git/gh/glab, the TUI tools yazi, television, lazygit, bat and search; plus vim, btop, the Paris time zone, key-only OpenSSH and NetworkManager |
 | `desktop.nix` | `profile-desktop` | the niri session (binds, window rules, workspaces, blur, XWayland), Noctalia, the greeter, fonts, terminal, browser, files, PDF, GTK theme, Obsidian, OneDrive, LocalSend, audio, power, Bluetooth, the full-profile VM settings, and `profile-comms` |
 | `comms.nix` | `profile-comms` | mail, Outlook, Teams, WhatsApp |
 | `ai.nix` | `profile-ai` | Claude Code and Codex with their desktop apps, herdr and its integrations, OmO (with omo-graph and the `pi` shim that lets herdr-projects start it), herdr-projects, zoetrope, Collie, clauth, Claude plugins, SuperClaude, the Context7 and Serena MCP servers, rtk, graphify |

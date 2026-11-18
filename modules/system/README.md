@@ -12,11 +12,12 @@ system tools. Each file defines one den aspect with a `nixos` class.
 | `laptop-power.nix` | `laptop-power` | Lid switch: suspend on battery and on AC, ignore when docked. |
 | `keyboard-fr.nix` | `keyboard-fr` | AZERTY console keymap (TTY and the `-base` gateway). |
 | `tailscale.nix` | `tailscale` | Tailscale with the firewall opened for direct connections; joined once by hand with `sudo tailscale up`. |
+| `ssh.nix` | `ssh` | OpenSSH server, key-only (no password, no root login); authorizes the user key of each machine of the fleet. Machines are reached by name through MagicDNS. |
 | `devenv.nix` | `devenv` | The devenv binary system-wide; projects load it through direnv (`homes/shell/direnv.nix`). |
 
 ## Who includes what
 
-- `profile-base` (`profiles/base.nix`): `keyboard-fr`, `devenv`, `tailscale`.
+- `profile-base` (`profiles/base.nix`): `keyboard-fr`, `devenv`, `tailscale`, `ssh`.
 - Hardware aspects (`hosts/<machine>/<machine>.nix`, `<machine>-hw`), so
   both the full and the `-base` entity get them:
   - `dazai-hw`: `boot-grub-efi`, `zram`, `laptop-power`, `windows-dualboot`.

@@ -19,6 +19,7 @@ during bootstrap. Most packages come from the `llm-agents` flake input
 | `superclaude.nix` | `home-superclaude` | SuperClaude `/sc:*` commands and persona agents, vendored from the tagged source |
 | `claude-mcp-context7.nix` | `home-claude-mcp-context7` | context7 MCP server (library docs), from nixpkgs |
 | `claude-mcp-serena.nix` | `home-claude-mcp-serena` | serena MCP server (LSP symbol lookup and edits), run through `uvx` at a pinned tag |
+| `rea.nix` | `home-rea` | rea (reverse engineering): the `rea` command, its MCP server and skill for Claude Code, with Ghidra and its JDK as the native engine |
 | `rtk.nix` | `home-rtk` | rtk PreToolUse hook that compacts Bash output; `RTK.md` imported by the global `CLAUDE.md` |
 | `graphify.nix` | `home-graphify` | graphify and its `/graphify` skill for Claude Code |
 | `clauth.nix` | `home-clauth` | multi-account manager for Claude Code and Codex, plus its herdr plugin |
@@ -92,10 +93,10 @@ during bootstrap. Most packages come from the `llm-agents` flake input
 ## Nix-owned vs by hand
 
 Nix provides every binary, herdr's config and plugin links, the agent hooks,
-the plugins and MCP entries, the SuperClaude, graphify and autoproject skill
+the plugins and MCP entries, the SuperClaude, graphify, autoproject and rea skill
 files, and herdr-projects' default profiles. Do not run the setup steps that
 would duplicate it (`herdr-projects configure`, `clauth herdr install`,
-`rtk init -g`, `graphify install`): their edits would not survive a switch.
+`rtk init -g`, `graphify install`, `rea setup`): their edits would not survive a switch.
 
 Done once per machine, by hand, and never in the repo:
 

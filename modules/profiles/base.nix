@@ -10,6 +10,7 @@
       den.aspects.devenv
       den.aspects.direnv
       den.aspects.tailscale
+      den.aspects.openvpn
       den.aspects.ssh
       den.aspects.shell-git
       den.aspects.shell-gh
